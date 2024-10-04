@@ -1,0 +1,37 @@
+.projekat {
+	width: 400px;
+	height: 400px;
+	background-color: #3a6d8c;
+	padding: 10px;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.projekat-image {
+	width: 100%;
+}
+
+.projekti-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 50px;
+}
+
+.projekat-tekst {
+	text-decoration: none;
+	font-weight: bold;
+	color: #ead8b1;
+	font-size: 20px;
+}
+
+.projekat-opis {
+	text-decoration: none;
+	color: #ead8b1;
+}
+
+body {
+	background-color: #001f3f;
+}

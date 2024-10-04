@@ -16,7 +16,7 @@ const PIPES = 1;
 const CIRCLES = 2;
 const CIRCUIT = 3;
 
-const MODE = CIRCLES;
+const MODE = CIRCUIT;
 
 class Cell {
 	constructor(x, y, numNeighbours) {
