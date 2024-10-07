@@ -4,11 +4,12 @@ let coins = [];
 let fruits = [];
 let mapData;
 let score = 0;
+let id = 0;
 let canEatGhost = false;
 let ghostTimer = 0.0;
 let constants = {
 	size: 40,
-	speed: 3,
+	speed: 300,
 	fruitDuration: 5,
 };
 
@@ -18,7 +19,7 @@ function preload() {
 }
 
 function setup() {
-	createCanvas(920, 920);
+	createCanvas(920, 1000);
 	mapData = [
 		[
 			"#",
@@ -651,6 +652,7 @@ function setup() {
 }
 
 function draw() {
+	deltaTime /= 1000;
 	background(0);
 	displayMap();
 	handleTimers();
@@ -659,24 +661,57 @@ function draw() {
 }
 
 function loadMap() {
+	pacman = new Character(0, 0, 0.85 * constants.size, 0.85 * constants.size, pacmanImg);
+	ghost = new Character(0, 0, 0.85 * constants.size, 0.85 * constants.size, ghostImg);
 	for (let row = 0; row < mapData.length; row++) {
 		for (let col = 0; col < mapData[0].length; col++) {
 			switch (mapData[row][col]) {
 				case "p":
-					pacman = new Character(col * constants.size, row * constants.size, pacmanImg);
-					coins.push(new Circle(col * constants.size, row * constants.size));
+					pacman.x = col * constants.size;
+					pacman.y = row * constants.size;
+					coins.push(
+						new Circle(
+							col * constants.size,
+							row * constants.size,
+							constants.size / 3,
+							color(255, 255, 0)
+						)
+					);
 					break;
 				case "m":
-					ghost = new Character(col * constants.size, row * constants.size, ghostImg);
+					ghost.x = col * constants.size;
+					ghost.y = row * constants.size;
 					break;
 				case "#":
-					walls.push(new Wall(col * constants.size, row * constants.size));
+					walls.push(
+						new Wall(
+							col * constants.size,
+							row * constants.size,
+							constants.size,
+							constants.size,
+							color(0, 0, 255)
+						)
+					);
 					break;
 				case " ":
-					coins.push(new Circle(col * constants.size, row * constants.size));
+					coins.push(
+						new Circle(
+							col * constants.size,
+							row * constants.size,
+							constants.size / 3,
+							color(255, 255, 0)
+						)
+					);
 					break;
 				case "@":
-					fruits.push(new Circle(col * constants.size, row * constants.size, true));
+					fruits.push(
+						new Circle(
+							col * constants.size,
+							row * constants.size,
+							constants.size / 2.5,
+							color(255, 0, 0)
+						)
+					);
 					break;
 			}
 		}
@@ -693,20 +728,209 @@ function displayMap() {
 }
 
 function moveCharacters() {
-	pacman.move();
-	ghost.move();
+	moveCharacter(pacman);
+	moveCharacter(ghost);
+}
+
+function moveCharacter(objekat) {
+	if (objekat.x < 0) {
+		objekat.x = (mapData[0].length - 1) * constants.size;
+	}
+	if (objekat.x > (mapData[0].length - 1) * constants.size) {
+		objekat.x = 0;
+	}
+
+	let collided = false;
+	let differentDirections = false;
+
+	if (objekat.nextDirection !== objekat.direction) {
+		switch (objekat.nextDirection) {
+			case "LEFT":
+				objekat.x -= objekat.w;
+				break;
+			case "RIGHT":
+				objekat.x += objekat.w;
+				break;
+			case "UP":
+				objekat.y -= objekat.h;
+				break;
+			case "DOWN":
+				objekat.y += objekat.h;
+				break;
+		}
+		differentDirections = true;
+	} else {
+		switch (objekat.nextDirection) {
+			case "LEFT":
+				objekat.x -= constants.speed * deltaTime;
+				break;
+			case "RIGHT":
+				objekat.x += constants.speed * deltaTime;
+				break;
+			case "UP":
+				objekat.y -= constants.speed * deltaTime;
+				break;
+			case "DOWN":
+				objekat.y += constants.speed * deltaTime;
+				break;
+		}
+	}
+
+	for (let wall of walls) {
+		if (collides(objekat, wall)) {
+			if (!differentDirections) {
+				switch (objekat.nextDirection) {
+					case "LEFT":
+						objekat.x = wall.x + wall.w;
+						break;
+					case "RIGHT":
+						objekat.x = wall.x - objekat.w;
+						break;
+					case "UP":
+						objekat.y = wall.y + wall.h;
+						break;
+					case "DOWN":
+						objekat.y = wall.y - objekat.h;
+						break;
+				}
+			} else {
+				switch (objekat.nextDirection) {
+					case "LEFT":
+						objekat.x += objekat.w;
+						break;
+					case "RIGHT":
+						objekat.x -= objekat.w;
+						break;
+					case "UP":
+						objekat.y += objekat.h;
+						break;
+					case "DOWN":
+						objekat.y -= objekat.h;
+						break;
+				}
+			}
+			collided = true;
+		}
+	}
+
+	if (!collided) {
+		if (objekat.direction !== objekat.nextDirection) {
+			switch (objekat.nextDirection) {
+				case "LEFT":
+					objekat.x += objekat.w;
+					objekat.x -= constants.speed * deltaTime;
+					break;
+				case "RIGHT":
+					objekat.x -= objekat.w;
+					objekat.x += constants.speed * deltaTime;
+					break;
+				case "UP":
+					objekat.y += objekat.h;
+					objekat.y -= constants.speed * deltaTime;
+					break;
+				case "DOWN":
+					objekat.y -= objekat.h;
+					objekat.y += constants.speed * deltaTime;
+					break;
+			}
+		}
+
+		if (objekat.nextDirection !== "NONE") {
+			objekat.direction = objekat.nextDirection;
+			return collided;
+		}
+
+		switch (objekat.nextDirection) {
+			case "LEFT":
+				objekat.angle = 270;
+				break;
+			case "RIGHT":
+				objekat.angle = 90;
+				break;
+			case "UP":
+				objekat.angle = 0;
+				break;
+			case "DOWN":
+				objekat.angle = 180;
+				break;
+		}
+	} else {
+		switch (objekat.direction) {
+			case "LEFT":
+				objekat.x -= constants.speed * deltaTime;
+				break;
+			case "RIGHT":
+				objekat.x += constants.speed * deltaTime;
+				break;
+			case "UP":
+				objekat.y -= constants.speed * deltaTime;
+				break;
+			case "DOWN":
+				objekat.y += constants.speed * deltaTime;
+				break;
+		}
+
+		for (let wall of walls) {
+			if (collides(objekat, wall)) {
+				switch (objekat.direction) {
+					case "LEFT":
+						objekat.x = wall.x + wall.w;
+						break;
+					case "RIGHT":
+						objekat.x = wall.x - objekat.w;
+						break;
+					case "UP":
+						objekat.y = wall.y + wall.h;
+						break;
+					case "DOWN":
+						objekat.y = wall.y - objekat.h;
+						break;
+				}
+				collided = true;
+			}
+		}
+	}
+
+	return collided;
+}
+
+function collides(objekat, wall) {
+	return (
+		objekat.x < wall.x + wall.w &&
+		objekat.x + objekat.w > wall.x &&
+		objekat.y < wall.y + wall.h &&
+		objekat.y + objekat.h > wall.y
+	);
+}
+function CollisionObjectObject(a, b) {
+	return (
+		((a.x + a.w > b.x && a.x + a.w < b.x + b.w) || (a.x < b.x + b.w && a.x > b.x)) &&
+		((a.y + a.h > b.y && a.y + a.h < b.y + b.h) || (a.y < b.y + b.h && a.y > b.y))
+	);
+}
+function CollisionObjectCircle(a, b) {
+	return (
+		((a.x + a.w >= b.x && a.x + a.w <= b.x + b.w) || (a.x <= b.x + b.w && a.x >= b.x)) &&
+		((a.y + a.h >= b.y && a.y + a.h <= b.y + b.h) || (a.y <= b.y + b.h && a.y >= b.y))
+	);
+}
+function CollisionCharacterCharacter(a, b) {
+	return (
+		((a.x + a.w >= b.x && a.x + a.w <= b.x + b.w) || (a.x <= b.x + b.w && a.x >= b.x)) &&
+		((a.y + a.h >= b.y && a.y + a.h <= b.y + b.h) || (a.y <= b.y + b.h && a.y >= b.y))
+	);
 }
 
 function checkCollisions() {
 	for (let i = coins.length - 1; i >= 0; i--) {
-		if (pacman.intersects(coins[i])) {
+		if (CollisionObjectCircle(pacman, coins[i])) {
 			coins.splice(i, 1);
 			score++;
 		}
 	}
 
 	for (let i = fruits.length - 1; i >= 0; i--) {
-		if (pacman.intersects(fruits[i])) {
+		if (CollisionObjectCircle(pacman, fruits[i])) {
 			fruits.splice(i, 1);
 			score += 2;
 			canEatGhost = true;
@@ -714,7 +938,7 @@ function checkCollisions() {
 		}
 	}
 
-	if (pacman.intersects(ghost)) {
+	if (CollisionCharacterCharacter(pacman, ghost)) {
 		if (canEatGhost) {
 			alert("You won! Your score: " + score);
 			noLoop();
@@ -739,52 +963,108 @@ function handleTimers() {
 	}
 }
 
+function Snap(a, val = constants.size) {
+	return floor(a / val) * val;
+}
+
 class Character {
-	constructor(x, y, img) {
+	constructor(x, y, w, h, img) {
 		this.x = x;
 		this.y = y;
 		this.img = img;
-		this.size = constants.size;
-		this.direction = createVector(0, 0);
-	}
-
-	move() {
-		this.x += this.direction.x * constants.speed;
-		this.y += this.direction.y * constants.speed;
+		this.w = w;
+		this.h = h;
+		this.direction;
 	}
 
 	show() {
-		image(this.img, this.x, this.y, this.size, this.size);
-	}
-
-	intersects(other) {
-		return dist(this.x, this.y, other.x, other.y) < this.size;
+		let draw_x = this.x;
+		let draw_y = this.y;
+		switch (this.direction) {
+			case "LEFT":
+				draw_y = Snap(draw_y);
+				break;
+			case "RIGHT":
+				draw_x = draw_x - floor(constants.size - this.w);
+				draw_y = Snap(draw_y);
+				break;
+			case "UP":
+				draw_x = Snap(draw_x);
+				break;
+			case "DOWN":
+				draw_x = Snap(draw_x);
+				draw_y = draw_y - floor(constants.size - this.h);
+				break;
+		}
+		image(this.img, draw_x, draw_y, constants.size, constants.size);
 	}
 }
 
 class Circle {
-	constructor(x, y, isFruit = false) {
+	constructor(x, y, r, color) {
 		this.x = x;
 		this.y = y;
-		this.size = constants.size / 2;
-		this.isFruit = isFruit;
+		this.r = r;
+		this.w = 2 * r;
+		this.h = 2 * r;
+		this.color = color;
 	}
 
 	show() {
-		fill(this.isFruit ? "red" : "yellow");
-		ellipse(this.x + this.size, this.y + this.size, this.size, this.size);
+		let draw_x = Snap(this.x) + (constants.size - 2 * this.r) / 2;
+		let draw_y = Snap(this.y) + (constants.size - 2 * this.r) / 2;
+		let draw_r = 2 * this.r;
+
+		fill(this.color);
+		ellipse(draw_x + this.w / 2, draw_y + this.h / 2, draw_r, draw_r);
 	}
 }
 
 class Wall {
-	constructor(x, y) {
+	constructor(x, y, w, h) {
 		this.x = x;
 		this.y = y;
-		this.size = constants.size;
+		this.w = w;
+		this.h = h;
 	}
 
 	show() {
-		fill(255);
-		rect(this.x, this.y, this.size, this.size);
+		push();
+		fill(0, 0, 255);
+		noStroke();
+		rect(this.x, this.y, this.w, this.h);
+		pop();
+	}
+}
+
+function keyPressed() {
+	switch (keyCode) {
+		case ESCAPE:
+			exit(); // to exit the program in p5.js, you might just stop execution or reset the state
+			break;
+		case UP_ARROW:
+			pacman.nextDirection = "UP";
+			break;
+		case LEFT_ARROW:
+			pacman.nextDirection = "LEFT";
+			break;
+		case DOWN_ARROW:
+			pacman.nextDirection = "DOWN";
+			break;
+		case RIGHT_ARROW:
+			pacman.nextDirection = "RIGHT";
+			break;
+		case 87: // 'W' key
+			ghost.nextDirection = "UP";
+			break;
+		case 65: // 'A' key
+			ghost.nextDirection = "LEFT";
+			break;
+		case 83: // 'S' key
+			ghost.nextDirection = "DOWN";
+			break;
+		case 68: // 'D' key
+			ghost.nextDirection = "RIGHT";
+			break;
 	}
 }
