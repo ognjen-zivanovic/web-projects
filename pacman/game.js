@@ -11,7 +11,6 @@ class GameScene {
 		this.canEatGhost = false;
 		this.ghostTimer = 0.0;
 
-
 		this.mapData = [
 			[
 				"#",
@@ -642,7 +641,7 @@ class GameScene {
 
 		this.screenHeight = this.mapData.length * constants.size;
 		this.screenWidth = this.mapData[0].length * constants.size;
-	
+
 		this.setup();
 	}
 
@@ -654,6 +653,7 @@ class GameScene {
 	update() {
 		this.deltaTime = deltaTime /= 1000;
 		background(0);
+
 		this.draw();
 		this.handleTimers();
 		this.moveCharacters();
@@ -661,18 +661,32 @@ class GameScene {
 	}
 
 	draw() {
+		if (this.canEatGhost) {
+			background(255, 0, 0);
+		}
 		this.walls.forEach((wall) => wall.show());
 		this.coins.forEach((coin) => coin.show());
 		this.fruits.forEach((fruit) => fruit.show());
-	
+
 		this.pacman.show();
 		this.ghost.show();
-
 	}
 
 	loadMap() {
-		this.pacman = new Character(0, 0, 0.85 * constants.size, 0.85 * constants.size, this.pacmanImg);
-		this.ghost = new Character(0, 0, 0.85 * constants.size, 0.85 * constants.size, this.ghostImg);
+		this.pacman = new Character(
+			0,
+			0,
+			0.85 * constants.size,
+			0.85 * constants.size,
+			this.pacmanImg
+		);
+		this.ghost = new Character(
+			0,
+			0,
+			0.85 * constants.size,
+			0.85 * constants.size,
+			this.ghostImg
+		);
 		for (let row = 0; row < this.mapData.length; row++) {
 			for (let col = 0; col < this.mapData[0].length; col++) {
 				switch (this.mapData[row][col]) {
@@ -740,11 +754,10 @@ class GameScene {
 		if (objekat.x > (this.mapData[0].length - 1) * constants.size) {
 			objekat.x = 0;
 		}
-	
+
 		let collided = false;
 		let differentDirections = false;
 
-	
 		if (objekat.nextDirection !== objekat.direction) {
 			switch (objekat.nextDirection) {
 				case "LEFT":
@@ -777,7 +790,7 @@ class GameScene {
 					break;
 			}
 		}
-	
+
 		for (let wall of this.walls) {
 			if (collides(objekat, wall)) {
 				if (!differentDirections) {
@@ -814,7 +827,7 @@ class GameScene {
 				collided = true;
 			}
 		}
-	
+
 		if (!collided) {
 			if (objekat.direction !== objekat.nextDirection) {
 				switch (objekat.nextDirection) {
@@ -836,12 +849,12 @@ class GameScene {
 						break;
 				}
 			}
-	
+
 			if (objekat.nextDirection !== "NONE") {
 				objekat.direction = objekat.nextDirection;
 				return collided;
 			}
-	
+
 			switch (objekat.nextDirection) {
 				case "LEFT":
 					objekat.angle = 270;
@@ -871,7 +884,7 @@ class GameScene {
 					objekat.y += constants.speed * this.deltaTime;
 					break;
 			}
-	
+
 			for (let wall of this.walls) {
 				if (collides(objekat, wall)) {
 					switch (objekat.direction) {
@@ -892,10 +905,9 @@ class GameScene {
 				}
 			}
 		}
-	
+
 		return collided;
 	}
-
 
 	checkCollisions() {
 		for (let i = this.coins.length - 1; i >= 0; i--) {
@@ -916,10 +928,10 @@ class GameScene {
 
 		if (CollisionCharacterCharacter(this.pacman, this.ghost)) {
 			if (this.canEatGhost) {
-				alert("You won! Your score: " + this.score);
+				alert("Pobedili ste! Rezultat: " + this.score);
 				noLoop();
 			} else {
-				alert("Game Over");
+				alert("Izgubili ste!");
 				noLoop();
 			}
 		}
@@ -932,7 +944,8 @@ class GameScene {
 
 	handleTimers() {
 		if (this.canEatGhost) {
-			this.ghostTimer -= this.deltaTime / 1000;
+			this.ghostTimer -= this.deltaTime;
+			console.log(this.ghostTimer);
 			if (this.ghostTimer < 0) {
 				this.canEatGhost = false;
 			}
@@ -942,7 +955,7 @@ class GameScene {
 	handeKeyPress(keyCode) {
 		switch (keyCode) {
 			case ESCAPE:
-				exit(); // to exit the program in p5.js, you might just stop execution or reset the state
+				exit();
 				break;
 			case UP_ARROW:
 				this.pacman.nextDirection = "UP";
@@ -970,5 +983,4 @@ class GameScene {
 				break;
 		}
 	}
-	
 }
