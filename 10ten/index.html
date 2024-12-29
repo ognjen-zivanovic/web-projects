@@ -8,7 +8,10 @@
 	<body>
 		<h1>Upload and Display File Content</h1>
 		<input type="file" id="fileInput" />
-		<pre id="fileContent"></pre>
+		<pre
+			id="fileContent"
+			style="font-size: 22px; text-wrap: wrap; width: 90%; margin: 0; padding: 0"
+		></pre>
 
 		<script>
 			document.getElementById("fileInput").addEventListener("change", function (event) {
@@ -16,7 +19,12 @@
 				if (file) {
 					const reader = new FileReader();
 					reader.onload = function (e) {
-						document.getElementById("fileContent").textContent = e.target.result;
+						let fileContent = e.target.result;
+						fileContent = fileContent
+							.split("\n")
+							.map((line, i) => `${i + 1}. ${line}`)
+							.join("\n");
+						document.getElementById("fileContent").textContent = fileContent;
 					};
 					reader.readAsText(file);
 				}
