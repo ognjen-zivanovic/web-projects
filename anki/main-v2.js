@@ -17772,6 +17772,6 @@ window.document.getElementById("hide-suspended").onclick = function () {
 
 window.document.getElementById("header").onclick = function () {
 	let a = window.document.createElement("a");
-	a.href = "#container-" + index_of_last_suspended;
+	a.href = "#container-" + (index_of_last_suspended + 1);
 	a.click();
 };
