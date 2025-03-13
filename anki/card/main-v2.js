@@ -17710,9 +17710,6 @@ const setNextCard = () => {
 
 setNextCard();
 
-const testButton = document.getElementById("test-button");
-testButton.onclick = setNextCard;
-
 const notKnownButton1 = document.getElementById("not-known-button-1");
 notKnownButton1.addEventListener("touchstart", () => {
 	setNextCard();
@@ -17780,3 +17777,13 @@ card2.addEventListener("animationend", () => {
 	card2.classList.remove("animateLeft");
 	card2.classList.remove("animateRight");
 });
+
+document.addEventListener(
+	"dblclick",
+	function (event) {
+		event.preventDefault();
+	},
+	{
+		passive: false,
+	}
+);
