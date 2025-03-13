@@ -1,0 +1,13 @@
+#settings {
+	display: flex;
+	flex-direction: row;
+	width: calc(90% - 15px);
+	position: relative;
+	justify-content: space-between;
+	height: 30px;
+}
+
+.setting {
+	font-size: 20px;
+	font-weight: bold;
+}

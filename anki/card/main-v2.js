@@ -36006,6 +36006,7 @@ var notesTest = [
 let topId = -1;
 let cardIndex = -1;
 let numSuspended = 0;
+let skipSuspended = false;
 const card1 = document.getElementById("card1");
 const card2 = document.getElementById("card2");
 
@@ -36015,6 +36016,17 @@ card2.style.zIndex = -1;
 const infoText1 = document.getElementById("info-text-1");
 const infoText2 = document.getElementById("info-text-2");
 const infoText3 = document.getElementById("info-text-3");
+
+function loadSaved() {
+	let saved_notes = localStorage.getItem("notes-v3");
+	if (saved_notes) {
+		let saved_notes_json = JSON.parse(saved_notes);
+		for (let i = 0; i < saved_notes_json.length; i++) {
+			notes[i].is_suspended = saved_notes_json[i].is_suspended;
+		}
+	}
+}
+loadSaved();
 
 function countSuspended() {
 	for (let i = 0; i < notes.length; i++) {
@@ -36041,6 +36053,11 @@ const setNextCard = () => {
 		card = card2;
 	}
 	cardIndex++;
+	if (skipSuspended) {
+		while (notes[cardIndex].is_suspended == -1) {
+			cardIndex++;
+		}
+	}
 
 	infoText1.innerHTML = numSuspended + "/" + notes.length;
 	infoText2.innerHTML = cardIndex + 1 + "/" + notes.length;
@@ -36086,7 +36103,7 @@ notKnownButton1.addEventListener("touchstart", () => {
 
 const knownButton1 = document.getElementById("known-button-1");
 knownButton1.addEventListener("touchstart", () => {
-	if (notes[cardIndex].is_suspended == 0) {
+	if (notes[cardIndex].is_suspended != -1) {
 		numSuspended++;
 	}
 	notes[cardIndex].is_suspended = -1;
@@ -36123,7 +36140,7 @@ notKnownButton2.addEventListener("touchstart", () => {
 
 const knownButton2 = document.getElementById("known-button-2");
 knownButton2.addEventListener("touchstart", () => {
-	if (notes[cardIndex].is_suspended == 0) {
+	if (notes[cardIndex].is_suspended != -1) {
 		numSuspended++;
 	}
 	notes[cardIndex].is_suspended = -1;
@@ -36163,3 +36180,32 @@ window.addEventListener(
 		passive: false,
 	}
 );
+
+const skipSuspendedButton = document.getElementById("skip-suspended");
+skipSuspendedButton.onclick = () => {
+	if (skipSuspended) {
+		skipSuspendedButton.innerHTML = "showing suspended";
+	} else {
+		skipSuspendedButton.innerHTML = "skipping suspended";
+	}
+	skipSuspended = !skipSuspended;
+};
+
+function saveToFile() {
+	let blob = new Blob([JSON.stringify(notes)], { type: "application/json" });
+	let url = window.URL.createObjectURL(blob);
+	let a = window.document.createElement("a");
+	a.href = url;
+	a.download = "notes-" + new Date().toISOString() + ".json";
+	a.click();
+}
+
+function saveToLocalStorage() {
+	localStorage.setItem("notes-v3", JSON.stringify(notes));
+}
+
+const saveProgressButton = document.getElementById("save-progress");
+saveProgressButton.onclick = () => {
+	saveToFile();
+	saveToLocalStorage();
+};
