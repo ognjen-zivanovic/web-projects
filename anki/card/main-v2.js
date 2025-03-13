@@ -6,44 +6,116 @@ var notes = [
 	{ id: 1339252520772, content: "Card5", back: "(I1) | J1", is_suspended: -1 },
 ];
 
-const testButton = document.getElementById("test-button");
+let topId = -1;
+let cardIndex = 0;
 const card1 = document.getElementById("card1");
-testButton.onclick = function () {
-	// pick random card
-	let randomCard = Math.floor(Math.random() * notes.length);
-	console.log(randomCard);
+const card2 = document.getElementById("card2");
 
-	// find child of card with tag "body-text"
-	let headerText = card1.getElementsByClassName("card-header");
-	let bodyTexts = card1.getElementsByClassName("body-text");
+card1.style.zIndex = 1;
+card2.style.zIndex = -1;
 
-	headerText[0].innerHTML = notes[randomCard].content;
-	// split the back text into two parts
-	const splitText = notes[randomCard].back.split("|");
+const setNextCard = () => {
+	if (topId == -1) {
+		topId = 1;
+	} else if (topId == 1) {
+		topId = 2;
+	} else if (topId == 2) {
+		topId = 1;
+	}
+
+	let card;
+	if (topId == 1) {
+		card = card1;
+	} else if (topId == 2) {
+		card = card2;
+	}
+	let headerText = card.getElementsByClassName("card-header");
+	let bodyTexts = card.getElementsByClassName("body-text");
+
+	//headerText[0].innerHTML = notes[cardIndex].content;
+
+	const splitText = notes[cardIndex].back.split("|");
 	let pronunciation = splitText[0].trim();
-	// remove brackets from pronunciation
+
 	pronunciation = pronunciation.replace("(", "");
 	pronunciation = pronunciation.replace(")", "");
 
 	const meaning = splitText[1].trim();
-	bodyTexts[0].innerHTML = meaning;
-	bodyTexts[1].innerHTML = pronunciation;
+	// bodyTexts[0].innerHTML = meaning;
+	// bodyTexts[1].innerHTML = pronunciation;
+
+	//cardIndex++;
 };
+
+setNextCard();
+
+const testButton = document.getElementById("test-button");
+testButton.onclick = setNextCard;
 
 const notKnownButton1 = document.getElementById("not-known-button-1");
 notKnownButton1.addEventListener("touchstart", () => {
-	card1.classList.add("animateLeft");
+	setNextCard();
+	card2.style.zIndex = 1;
+	card2.classList.remove("animateLeft");
+	card2.classList.remove("animateRight");
+	body2.style.display = "none";
 
-	card1.addEventListener("animationend", () => {
-		card1.classList.remove("animateLeft");
-	});
+	card1.style.zIndex = -1;
+	card1.classList.add("animateLeft");
 });
 
 const knownButton1 = document.getElementById("known-button-1");
 knownButton1.addEventListener("touchstart", () => {
-	card1.classList.add("animateRight");
+	setNextCard();
+	card2.style.zIndex = 1;
+	card2.classList.remove("animateLeft");
+	card2.classList.remove("animateRight");
+	body2.style.display = "none";
 
-	card1.addEventListener("animationend", () => {
-		card1.classList.remove("animateRight");
-	});
+	card1.style.zIndex = -1;
+	card1.classList.add("animateRight");
+});
+
+const body1 = document.getElementById("body1");
+card1.addEventListener("touchstart", () => {
+	body1.style.display = "flex";
+});
+
+const notKnownButton2 = document.getElementById("not-known-button-2");
+notKnownButton2.addEventListener("touchstart", () => {
+	setNextCard();
+	card1.style.zIndex = 1;
+	card1.classList.remove("animateLeft");
+	card1.classList.remove("animateRight");
+	body1.style.display = "none";
+
+	card2.style.zIndex = -1;
+	card2.classList.add("animateLeft");
+});
+
+const knownButton2 = document.getElementById("known-button-2");
+knownButton2.addEventListener("touchstart", () => {
+	setNextCard();
+	card1.style.zIndex = 1;
+	card1.classList.remove("animateLeft");
+	card1.classList.remove("animateRight");
+	body1.style.display = "none";
+
+	card2.style.zIndex = -1;
+	card2.classList.add("animateRight");
+});
+
+const body2 = document.getElementById("body2");
+card2.addEventListener("touchstart", () => {
+	body2.style.display = "flex";
+});
+
+card1.addEventListener("animationend", () => {
+	card1.classList.remove("animateLeft");
+	card1.classList.remove("animateRight");
+});
+
+card2.addEventListener("animationend", () => {
+	card2.classList.remove("animateLeft");
+	card2.classList.remove("animateRight");
 });
