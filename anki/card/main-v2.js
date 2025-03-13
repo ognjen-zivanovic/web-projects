@@ -17777,13 +17777,3 @@ card2.addEventListener("animationend", () => {
 	card2.classList.remove("animateLeft");
 	card2.classList.remove("animateRight");
 });
-
-document.addEventListener(
-	"dblclick",
-	function (event) {
-		event.preventDefault();
-	},
-	{
-		passive: false,
-	}
-);
