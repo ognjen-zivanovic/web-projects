@@ -15,7 +15,7 @@ var notes = [
 		id: 1339252520770,
 		content: "一",
 		back: "(いち) | one",
-		is_suspended: -1,
+		is_suspended: 0,
 	},
 	{
 		id: 1339252520771,
@@ -36042,7 +36042,13 @@ const setNextCard = () => {
 	}
 	cardIndex++;
 
+	infoText1.innerHTML = numSuspended + "/" + notes.length;
 	infoText2.innerHTML = cardIndex + 1 + "/" + notes.length;
+	if (notes[cardIndex].is_suspended == -1) {
+		infoText3.innerHTML = "known";
+	} else {
+		infoText3.innerHTML = "";
+	}
 
 	let headerText = card.getElementsByClassName("card-header");
 	let bodyTexts = card.getElementsByClassName("body-text");
@@ -36064,6 +36070,10 @@ setNextCard();
 
 const notKnownButton1 = document.getElementById("not-known-button-1");
 notKnownButton1.addEventListener("touchstart", () => {
+	if (notes[cardIndex].is_suspended == -1) {
+		numSuspended--;
+	}
+	notes[cardIndex].is_suspended = 0;
 	setNextCard();
 	card2.style.zIndex = 1;
 	card2.classList.remove("animateLeft");
@@ -36076,6 +36086,10 @@ notKnownButton1.addEventListener("touchstart", () => {
 
 const knownButton1 = document.getElementById("known-button-1");
 knownButton1.addEventListener("touchstart", () => {
+	if (notes[cardIndex].is_suspended == 0) {
+		numSuspended++;
+	}
+	notes[cardIndex].is_suspended = -1;
 	setNextCard();
 	card2.style.zIndex = 1;
 	card2.classList.remove("animateLeft");
@@ -36093,6 +36107,10 @@ card1.addEventListener("touchstart", () => {
 
 const notKnownButton2 = document.getElementById("not-known-button-2");
 notKnownButton2.addEventListener("touchstart", () => {
+	if (notes[cardIndex].is_suspended == -1) {
+		numSuspended--;
+	}
+	notes[cardIndex].is_suspended = 0;
 	setNextCard();
 	card1.style.zIndex = 1;
 	card1.classList.remove("animateLeft");
@@ -36105,6 +36123,10 @@ notKnownButton2.addEventListener("touchstart", () => {
 
 const knownButton2 = document.getElementById("known-button-2");
 knownButton2.addEventListener("touchstart", () => {
+	if (notes[cardIndex].is_suspended == 0) {
+		numSuspended++;
+	}
+	notes[cardIndex].is_suspended = -1;
 	setNextCard();
 	card1.style.zIndex = 1;
 	card1.classList.remove("animateLeft");
@@ -36123,11 +36145,13 @@ card2.addEventListener("touchstart", () => {
 card1.addEventListener("animationend", () => {
 	card1.classList.remove("animateLeft");
 	card1.classList.remove("animateRight");
+	body1.style.display = "none";
 });
 
 card2.addEventListener("animationend", () => {
 	card2.classList.remove("animateLeft");
 	card2.classList.remove("animateRight");
+	body2.style.display = "none";
 });
 
 window.addEventListener(

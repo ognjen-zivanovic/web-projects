@@ -73,3 +73,7 @@
 	margin: 10px;
 	font-size: 30px;
 }
+
+* {
+	touch-action: manipulation;
+}
