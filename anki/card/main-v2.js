@@ -36131,7 +36131,7 @@ card2.addEventListener("animationend", () => {
 });
 
 window.addEventListener(
-	"dbclick",
+	"dblclick",
 	function (event) {
 		event.preventDefault();
 	},
