@@ -17777,3 +17777,5 @@ card2.addEventListener("animationend", () => {
 	card2.classList.remove("animateLeft");
 	card2.classList.remove("animateRight");
 });
+
+window.scrollTo(0, 1);
