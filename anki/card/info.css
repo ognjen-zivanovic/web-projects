@@ -1,5 +1,24 @@
 .info {
 	position: relative;
-	left: -40%;
-	top: -33.33%;
+	width: calc(90% - 15px);
+	height: calc(65% + 2 * 20px);
+
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.info-text {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 18px;
+}
+
+.side-info {
+	width: 25%;
+}
+
+.right-info {
+	text-align: right;
+	color: #27ae60;
+	font-weight: bold;
 }

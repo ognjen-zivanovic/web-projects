@@ -1,4 +1,30 @@
 var notes = [
+	{ id: 1339252520768, content: "それ", back: "(それ) | that, that one", is_suspended: -1 },
+	{ id: 1339252520769, content: "一つ", back: "(ひとつ) | one (thing)", is_suspended: -1 },
+	{ id: 1339252520770, content: "一", back: "(いち) | one", is_suspended: -1 },
+	{ id: 1339252520771, content: "二", back: "(に) | two", is_suspended: -1 },
+	{ id: 1339252520772, content: "二つ", back: "(ふたつ) | two (things)", is_suspended: -1 },
+	{ id: 1339252520773, content: "三", back: "(さん) | three", is_suspended: -1 },
+	{ id: 1339252520774, content: "三つ", back: "(みっつ) | three (things)", is_suspended: -1 },
+	{ id: 1339252520775, content: "四つ", back: "(よっつ) | four (things)", is_suspended: -1 },
+	{ id: 1339252520776, content: "四", back: "(し) | four", is_suspended: -1 },
+	{ id: 1339252520777, content: "これ", back: "(これ) | this, this one", is_suspended: -1 },
+	{ id: 1339252520778, content: "四", back: "(よん) | four", is_suspended: -1 },
+	{ id: 1339252520779, content: "五つ", back: "(いつつ) | five (things)", is_suspended: -1 },
+	{ id: 1339252520780, content: "五", back: "(ご) | five", is_suspended: -1 },
+	{ id: 1339252520781, content: "六つ", back: "(むっつ) | six (things)", is_suspended: -1 },
+	{ id: 1339252520782, content: "六", back: "(ろく) | six", is_suspended: -1 },
+	{ id: 1339252520783, content: "七", back: "(なな) | seven", is_suspended: -1 },
+	{ id: 1339252520784, content: "七つ", back: "(ななつ) | seven (things)", is_suspended: -1 },
+	{ id: 1339252520785, content: "八", back: "(はち) | eight", is_suspended: -1 },
+	{ id: 1339252520786, content: "八つ", back: "(やっつ) | eight (things)", is_suspended: -1 },
+	{ id: 1339252520787, content: "なる", back: "(なる) | become", is_suspended: -1 },
+	{ id: 1339252520788, content: "九", back: "(きゅう) | nine", is_suspended: -1 },
+	{ id: 1339252520789, content: "九つ", back: "(ここのつ) | nine (things)", is_suspended: -1 },
+	{ id: 1339252520790, content: "十", back: "(じゅう) | ten", is_suspended: -1 },
+	{ id: 1339252520791, content: "百", back: "(ひゃく) | hundred", is_suspended: -1 },
+	{ id: 1339252520792, content: "千", back: "(せん) | thousand", is_suspended: -1 },
+	{ id: 1339252520793, content: "万", back: "(まん) | ten thousand", is_suspended: -1 },
 	{ id: 1339252520794, content: "円", back: "(えん) | circle", is_suspended: -1 },
 	{ id: 1339252520795, content: "円", back: "(えん) | yen", is_suspended: -1 },
 	{ id: 1339252520796, content: "時", back: "(とき) | time", is_suspended: -1 },
@@ -205,8 +231,8 @@ var notes = [
 	{ id: 1339252520907, content: "かなり", back: "(かなり) | fairly, rather", is_suspended: 2 },
 	{
 		id: 1339252520908,
-		content: "晩(ばん) | evening ",
-		back: "(usually from sunset to bedtime)",
+		content: "晩",
+		back: "(ばん) | evening (usually from sunset to bedtime)",
 		is_suspended: -1,
 	},
 	{
@@ -217,8 +243,8 @@ var notes = [
 	},
 	{
 		id: 1339252520910,
-		content: "夜(よる) | night ",
-		back: "(from sunset to sunrise)",
+		content: "夜",
+		back: "(よる) | night (from sunset to sunrise)",
 		is_suspended: -1,
 	},
 	{ id: 1339252520911, content: "食べる", back: "(たべる) | eat", is_suspended: -1 },
@@ -278,7 +304,7 @@ var notes = [
 	{ id: 1339252520950, content: "白い", back: "(しろい) | white, blank", is_suspended: -1 },
 	{ id: 1339252520951, content: "赤い", back: "(あかい) | red", is_suspended: -1 },
 	{ id: 1339252520952, content: "部屋", back: "(へや) | room", is_suspended: -1 },
-	{ id: 1339252520953, content: "米(こめ) | rice ", back: "(grain)", is_suspended: -1 },
+	{ id: 1339252520953, content: "米", back: "(こめ) | rice (grain)", is_suspended: -1 },
 	{ id: 1339252520954, content: "未だ", back: "(まだ) | yet, more", is_suspended: -1 },
 	{ id: 1339252520955, content: "有る", back: "(ある) | exist, possess", is_suspended: -1 },
 	{ id: 1339252520956, content: "無い", back: "(ない) | to not be", is_suspended: -1 },
@@ -295,20 +321,20 @@ var notes = [
 	{ id: 1339252520967, content: "みんな", back: "(みんな) | all, everybody", is_suspended: -1 },
 	{
 		id: 1339252520968,
-		content: "暑い(あつい) | hot, warm ",
-		back: "(temperature of the air)",
+		content: "暑い",
+		back: "(あつい) | hot, warm (temperature of the air)",
 		is_suspended: -1,
 	},
 	{
 		id: 1339252520969,
-		content: "熱い(あつい) | hot ",
-		back: "(things, touch)",
+		content: "熱い",
+		back: "(あつい) | hot (things, touch)",
 		is_suspended: -1,
 	},
 	{
 		id: 1339252520970,
-		content: "寒い(さむい) | cold ",
-		back: "(temperature of the air)",
+		content: "寒い",
+		back: "(さむい) | cold (temperature of the air)",
 		is_suspended: -1,
 	},
 	{ id: 1339252520971, content: "暖かい", back: "(あたたかい) | warm", is_suspended: -1 },
@@ -368,8 +394,8 @@ var notes = [
 	},
 	{
 		id: 1339252520996,
-		content: "生きる(いきる) | live ",
-		back: "(one's life)",
+		content: "生きる",
+		back: "(いきる) | live (one's life)",
 		is_suspended: -1,
 	},
 	{ id: 1339252520997, content: "どちら", back: "(どちら) | which", is_suspended: -1 },
@@ -460,7 +486,7 @@ var notes = [
 	{ id: 1339252521057, content: "どうして", back: "(どうして) | why", is_suspended: -1 },
 	{ id: 1339252521058, content: "服", back: "(ふく) | clothes", is_suspended: -1 },
 	{ id: 1339252521059, content: "お父さん", back: "(おとうさん) | father", is_suspended: -1 },
-	{ id: 1339252521060, content: "父(ちち) | ", back: "(speaker's)father", is_suspended: -1 },
+	{ id: 1339252521060, content: "父", back: "(ちち) | (speaker's)father", is_suspended: -1 },
 	{ id: 1339252521061, content: "お母さん", back: "(おかあさん) | mother", is_suspended: -1 },
 	{ id: 1339252521062, content: "母(はは) | ", back: "(speaker's)mother", is_suspended: -1 },
 	{ id: 1339252521063, content: "親", back: "(おや) | parent", is_suspended: -1 },
@@ -17668,12 +17694,29 @@ var notesTest = [
 ];
 
 let topId = -1;
-let cardIndex = 0;
+let cardIndex = -1;
+let numSuspended = 0;
 const card1 = document.getElementById("card1");
 const card2 = document.getElementById("card2");
 
 card1.style.zIndex = 1;
 card2.style.zIndex = -1;
+
+const infoText1 = document.getElementById("info-text-1");
+const infoText2 = document.getElementById("info-text-2");
+const infoText3 = document.getElementById("info-text-3");
+
+function countSuspended() {
+	for (let i = 0; i < notes.length; i++) {
+		if (notes[i].is_suspended == -1) {
+			numSuspended++;
+		}
+		if (notes[i].content.includes("(")) {
+			console.log(notes[i].id);
+		}
+	}
+}
+countSuspended();
 
 const setNextCard = () => {
 	if (topId == -1) {
@@ -17690,6 +17733,10 @@ const setNextCard = () => {
 	} else if (topId == 2) {
 		card = card2;
 	}
+	cardIndex++;
+
+	infoText2.innerHTML = cardIndex + 1 + "/" + notes.length;
+
 	let headerText = card.getElementsByClassName("card-header");
 	let bodyTexts = card.getElementsByClassName("body-text");
 
@@ -17704,8 +17751,6 @@ const setNextCard = () => {
 	const meaning = splitText[1].trim();
 	bodyTexts[0].innerHTML = meaning;
 	bodyTexts[1].innerHTML = pronunciation;
-
-	cardIndex++;
 };
 
 setNextCard();
@@ -17777,5 +17822,3 @@ card2.addEventListener("animationend", () => {
 	card2.classList.remove("animateLeft");
 	card2.classList.remove("animateRight");
 });
-
-window.scrollTo(0, 1);
