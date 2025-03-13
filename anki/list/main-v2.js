@@ -1,4 +1,4 @@
-var notesProduction = [
+var notes = [
 	{ id: 1339252520768, content: "それ", back: "(それ) | that, that one", is_suspended: -1 },
 	{ id: 1339252520769, content: "一つ(ひとつ) | one ", back: "(thing)", is_suspended: -1 },
 	{ id: 1339252520770, content: "一", back: "(いち) | one", is_suspended: -1 },
@@ -17685,7 +17685,7 @@ var notesProduction = [
 	},
 ];
 
-var notes = [
+var notesTest = [
 	{ id: 1339252520768, content: "Card1", back: "A1 | B1", is_suspended: -1 },
 	{ id: 1339252520769, content: "Card2", back: "C1 | D1", is_suspended: 0 },
 	{ id: 1339252520770, content: "Card3", back: "E1 | F1", is_suspended: 0 },
@@ -17693,7 +17693,7 @@ var notes = [
 	{ id: 1339252520772, content: "Card5", back: "I1 | J1", is_suspended: -1 },
 ];
 
-let saved_notes = localStorage.getItem("notes-v3");
+let saved_notes = localStorage.getItem("notes-v2");
 if (saved_notes) {
 	let saved_notes_json = JSON.parse(saved_notes);
 	for (let i = 0; i < saved_notes_json.length; i++) {
@@ -17771,7 +17771,7 @@ window.document.getElementById("save-button1").onclick = function () {
 };
 
 window.document.getElementById("save-button2").onclick = function () {
-	localStorage.setItem("notes-v3", JSON.stringify(notes));
+	localStorage.setItem("notes-v2", JSON.stringify(notes));
 };
 
 window.document.getElementById("hide-suspended").onclick = function () {
