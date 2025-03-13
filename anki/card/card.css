@@ -33,7 +33,6 @@ body {
 .card-header {
 	color: #1f8efa;
 	font-family: "Noto Sans JP", sans-serif;
-	font-size: 30px;
 	flex: 1.4;
 	text-align: center;
 	display: flex;
@@ -60,7 +59,6 @@ body {
 .body-text {
 	color: #1f8efa;
 	font-family: "Noto Sans JP", sans-serif;
-	font-size: 30px;
 	margin: 10px;
 }
 
@@ -112,4 +110,15 @@ body {
 	to {
 		transform: translateX(500px) translateY(1000px) rotate(-40deg);
 	}
+}
+
+.header {
+	font-size: 45px;
+}
+
+.pronounciation {
+	font-size: 28px;
+}
+.meaning {
+	font-size: 40px;
 }
