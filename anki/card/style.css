@@ -73,3 +73,9 @@
 	margin: 10px;
 	font-size: 30px;
 }
+
+html,
+body {
+	touch-action: manipulation; /* Disable zoom and gestures */
+	-ms-touch-action: manipulation; /* For older IE versions */
+}
