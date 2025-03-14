@@ -36006,7 +36006,8 @@ var notesTest = [
 let topId = -1;
 let cardIndex = -1;
 let numSuspended = 0;
-let skipSuspended = false;
+let showing = "all";
+let shuffle = false;
 const card1 = document.getElementById("card1");
 const card2 = document.getElementById("card2");
 
@@ -36037,6 +36038,14 @@ function countSuspended() {
 }
 countSuspended();
 
+function getIndexOfNextCard() {
+	if (!shuffle) {
+		return cardIndex + 1;
+	} else {
+		return Math.floor(Math.random() * notes.length);
+	}
+}
+
 const setNextCard = () => {
 	if (topId == -1) {
 		topId = 1;
@@ -36052,10 +36061,14 @@ const setNextCard = () => {
 	} else if (topId == 2) {
 		card = card2;
 	}
-	cardIndex++;
-	if (skipSuspended) {
+	cardIndex = getIndexOfNextCard();
+	if (showing == "new") {
 		while (notes[cardIndex].is_suspended == -1) {
-			cardIndex++;
+			cardIndex = getIndexOfNextCard();
+		}
+	} else if (showing == "suspended") {
+		while (notes[cardIndex].is_suspended != -1) {
+			cardIndex = getIndexOfNextCard();
 		}
 	}
 
@@ -36183,12 +36196,14 @@ window.addEventListener(
 
 const skipSuspendedButton = document.getElementById("skip-suspended");
 skipSuspendedButton.onclick = () => {
-	if (skipSuspended) {
+	if (showing == "all") {
 		skipSuspendedButton.innerHTML = "showing suspended";
-	} else {
-		skipSuspendedButton.innerHTML = "skipping suspended";
+	} else if (showing == "suspended") {
+		skipSuspendedButton.innerHTML = "showing new";
+	} else if (showing == "new") {
+		skipSuspendedButton.innerHTML = "showing all";
 	}
-	skipSuspended = !skipSuspended;
+	showing = showing == "all" ? "suspended" : showing == "suspended" ? "new" : "all";
 };
 
 function saveToFile() {
@@ -36208,4 +36223,14 @@ const saveProgressButton = document.getElementById("save-progress");
 saveProgressButton.onclick = () => {
 	saveToFile();
 	saveToLocalStorage();
+};
+
+const toggleShuffleButton = document.getElementById("toggle-shuffle");
+toggleShuffleButton.onclick = () => {
+	if (shuffle) {
+		toggleShuffleButton.innerHTML = "not shuffling";
+	} else {
+		toggleShuffleButton.innerHTML = "shuffling";
+	}
+	shuffle = !shuffle;
 };

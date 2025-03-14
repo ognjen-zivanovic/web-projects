@@ -1,7 +1,7 @@
 .info {
 	position: relative;
 	width: calc(90% - 15px);
-	height: calc(65% + 2 * 35px);
+	height: calc(65% + 2 * 50px);
 
 	display: flex;
 	flex-direction: row;
