@@ -122,3 +122,17 @@ body {
 .meaning {
 	font-size: 40px;
 }
+.wanikani {
+	font-size: 22px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333333;
+	width: fit-content;
+	padding: 2px;
+	border-radius: 5px;
+}
+
+.texts {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
