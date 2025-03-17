@@ -125,9 +125,13 @@ body {
 .wanikani {
 	font-size: 22px;
 	font-family: Arial, Helvetica, sans-serif;
-	color: #333333;
+	color: black;
 	width: fit-content;
 	padding: 2px;
+
+	border-style: solid;
+	border-width: 2px;
+	border-color: black;
 	border-radius: 5px;
 }
 

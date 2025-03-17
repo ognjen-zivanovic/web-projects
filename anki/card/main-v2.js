@@ -42082,7 +42082,7 @@ function updateCardIndex() {
 }
 
 function updateCardInfo(card) {
-	infoText1.innerHTML = numSuspended + "/" + notes.length;
+	infoText1.innerHTML = numSuspended + "/" + (indexOfLastSuspended + 1);
 	infoText2.innerHTML = cardIndex + 1 + "/" + notes.length;
 	if (notes[cardIndex].is_suspended == -1) {
 		infoText3.innerHTML = "known";
@@ -42108,7 +42108,7 @@ function updateCardInfo(card) {
 
 	const wkLvl = wkLevel[cardIndex];
 	if (wkLvl != null) {
-		wkText.innerHTML = "WK" + wkLvl;
+		wkText.innerHTML = "WK " + wkLvl;
 		wkText.style.display = "block";
 		if (wkLvl < 10) {
 			wkText.style.backgroundColor = "#aeeeee";
@@ -42155,6 +42155,7 @@ const knownButton1 = document.getElementById("known-button-1");
 knownButton1.addEventListener("touchstart", () => {
 	if (notes[cardIndex].is_suspended != -1) {
 		numSuspended++;
+		indexOfLastSuspended = Math.max(indexOfLastSuspended, cardIndex);
 	}
 	notes[cardIndex].is_suspended = -1;
 	setNextCard();
@@ -42192,6 +42193,7 @@ const knownButton2 = document.getElementById("known-button-2");
 knownButton2.addEventListener("touchstart", () => {
 	if (notes[cardIndex].is_suspended != -1) {
 		numSuspended++;
+		indexOfLastSuspended = Math.max(indexOfLastSuspended, cardIndex);
 	}
 	notes[cardIndex].is_suspended = -1;
 	setNextCard();
