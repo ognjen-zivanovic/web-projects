@@ -89,7 +89,8 @@ function updateCardInfo(card) {
 	let bodyTexts = card.getElementsByClassName("body-text");
 	let wkText = card.getElementsByClassName("wanikani")[0];
 
-	headerText[0].innerHTML = notes[cardIndex].content;
+	let headerString = notes[cardIndex].content;
+	headerText[0].innerHTML = headerString;
 
 	const splitText = notes[cardIndex].back.split("|");
 	let pronunciation = splitText[0].trim();
@@ -118,6 +119,29 @@ function updateCardInfo(card) {
 		}
 	} else {
 		wkText.style.display = "none";
+	}
+
+	const kanjiTexts = card.getElementsByClassName("kanji-text-containter")[0];
+	kanjiTexts.innerHTML = "";
+
+	for (let i = 0; i < headerString.length; i++) {
+		let kanjiString = wkKanji[headerString[i]];
+		if (kanjiString != null) {
+			let kanjiText = document.createElement("div");
+			kanjiText.classList.add("body-text", "kanji");
+
+			let nameDiv = document.createElement("div");
+			let meaningDiv = document.createElement("div");
+			let pronunciationDiv = document.createElement("div");
+
+			nameDiv.innerHTML = kanjiString[0];
+			meaningDiv.innerHTML = kanjiString[1];
+			pronunciationDiv.innerHTML = kanjiString[2];
+			kanjiText.appendChild(nameDiv);
+			kanjiText.appendChild(meaningDiv);
+			kanjiText.appendChild(pronunciationDiv);
+			kanjiTexts.appendChild(kanjiText);
+		}
 	}
 }
 
