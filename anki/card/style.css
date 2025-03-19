@@ -75,5 +75,5 @@
 }
 
 * {
-	touch-action: none;
+	touch-action: pan-up pan-down;
 }
