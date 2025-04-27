@@ -265,7 +265,7 @@ skipSuspendedButton.onclick = () => {
 };
 
 function saveToFile() {
-	let blob = new Blob([JSON.stringify(notes)], { type: "application/json" });
+	let blob = new Blob([JSON.stringify(notes, null, 2)], { type: "application/json" });
 	let url = window.URL.createObjectURL(blob);
 	let a = window.document.createElement("a");
 	a.href = url;
@@ -292,7 +292,7 @@ function loadFromFile() {
 }
 
 function saveToLocalStorage() {
-	localStorage.setItem("notes-v3", JSON.stringify(notes, null, 2));
+	localStorage.setItem("notes-v3", JSON.stringify(notes));
 }
 
 const saveProgressButton = document.getElementById("save-progress");
