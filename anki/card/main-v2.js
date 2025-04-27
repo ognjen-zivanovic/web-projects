@@ -273,13 +273,38 @@ function saveToFile() {
 	a.click();
 }
 
+function loadFromFile() {
+	let input = document.createElement("input");
+	input.type = "file";
+	input.accept = ".json";
+	input.onchange = (event) => {
+		let file = event.target.files[0];
+		let reader = new FileReader();
+		reader.onload = (event) => {
+			let data = JSON.parse(event.target.result);
+			for (let i = 0; i < data.length; i++) {
+				notes[i].is_suspended = data[i].is_suspended;
+			}
+		};
+		reader.readAsText(file);
+	};
+	input.click();
+}
+
 function saveToLocalStorage() {
-	localStorage.setItem("notes-v3", JSON.stringify(notes));
+	localStorage.setItem("notes-v3", JSON.stringify(notes, null, 2));
 }
 
 const saveProgressButton = document.getElementById("save-progress");
+const loadProgressButton = document.getElementById("load-progress");
+
 saveProgressButton.onclick = () => {
 	saveToFile();
+	saveToLocalStorage();
+};
+
+loadProgressButton.onclick = () => {
+	loadFromFile();
 	saveToLocalStorage();
 };
 

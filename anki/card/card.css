@@ -162,3 +162,12 @@ body {
 	height: 85%;
 	overflow: scroll;
 }
+
+.save-load {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	width: 35%;
+	height: 100%;
+}
