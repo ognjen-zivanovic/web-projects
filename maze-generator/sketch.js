@@ -15,32 +15,84 @@ function preload() {
 	SIZE = 10;
 }
 
-function setup() {
-	reset();
-
+function resetGraph() {
 	for (let i = 0; i < DIM_X * DIM_Y; i++) {
 		visited[i] = false;
 		done[i] = false;
 		graph[i] = [];
 		from[i] = -1;
+		cells = [];
 	}
 
 	let startCell = floor(random(DIM_X * DIM_Y));
 	visited[startCell] = true;
 	cells.push(startCell);
+}
 
+function setup() {
+	reset();
+
+	let controlPanel = createDiv();
+	controlPanel.position(0, 0, "absolute");
+
+	let controls = createDiv();
+	controls.style("background-color", "rgb(10, 10, 10)");
+	controls.style("padding", "10px");
+	controls.style("border-radius", "8px");
+
+	// Use flexbox for layout
+	controls.style("display", "flex");
+	controls.style("flex-direction", "column");
+	controls.style("gap", "5px");
+
+	// Create labels
+	speedText = createP("Speed");
+	sizeText = createP("Size");
+
+	speedText.class("label-text");
+	sizeText.class("label-text");
+
+	// Create sliders
 	speedSlider = createSlider(1, 100, SPEED);
 	sizeSlider = createSlider(1, 50, SIZE);
+
+	speedSlider.class("slider");
+	sizeSlider.class("slider");
+
+	speedSlider.input(onSpeedChange);
+	sizeSlider.input(onSizeChange);
+
+	// Add them to the controls div in order
+	controls.child(speedText);
+	controls.child(speedSlider);
+	controls.child(sizeText);
+	controls.child(sizeSlider);
+
+	resetButton = createButton("Reset");
+	resetButton.mousePressed(reset);
+	resetButton.style("padding", "8px");
+	resetButton.style("margin-top", "4px");
+	resetButton.style("font-size", "16px");
+	controls.child(resetButton);
+
+	controlPanel.child(controls);
+	makeDraggablePanel(controlPanel, [speedSlider, sizeSlider], 25);
+}
+
+function onSpeedChange() {
+	SPEED = speedSlider.value();
+}
+
+function onSizeChange() {
+	SIZE = sizeSlider.value();
+	reset();
 }
 
 function update() {
-	SPEED = speedSlider.value();
-	SIZE = sizeSlider.value();
-
 	for (let m = 0; m < SPEED; m++) {
 		if (cells.length === 0) return;
 		let currentCell = cells.pop();
-		let x = currentCell % DIM_X;
+		let x = floor(currentCell % DIM_X);
 		let y = floor(currentCell / DIM_X);
 		let possibleNeighbours = [];
 
@@ -113,74 +165,27 @@ function drawCell(y, x) {
 
 function draw() {
 	update();
-
-	// for (let i = lastVisited; i !== 0 && i !== undefined; i = from[i]) {
-	// 	console.log(i);
-	// 	for (let k of graph[i]) {
-	// 		fill(0, 255, 0);
-	// 		let x = i % DIM_X;
-	// 		let y = floor(i / DIM_X);
-	// 		rect(
-	// 			x * SIZE + wallWidth,
-	// 			y * SIZE + wallWidth,
-	// 			SIZE - 2 * wallWidth,
-	// 			SIZE - 2 * wallWidth
-	// 		);
-
-	// 		for (let k of graph[i]) {
-	// 			if (k === i - DIM_X)
-	// 				rect(x * SIZE + wallWidth, y * SIZE, SIZE - 2 * wallWidth, wallWidth);
-	// 			if (k === i + DIM_X)
-	// 				rect(
-	// 					x * SIZE + wallWidth,
-	// 					(y + 1) * SIZE - wallWidth,
-	// 					SIZE - 2 * wallWidth,
-	// 					wallWidth
-	// 				);
-	// 			if (k === i - 1)
-	// 				rect(x * SIZE, y * SIZE + wallWidth, wallWidth, SIZE - 2 * wallWidth);
-	// 			if (k === i + 1)
-	// 				rect(
-	// 					(x + 1) * SIZE - wallWidth,
-	// 					y * SIZE + wallWidth,
-	// 					wallWidth,
-	// 					SIZE - 2 * wallWidth
-	// 				);
-	// 		}
-	// 	}
-	// }
-}
-
-function keyPressed() {
-	if (key === " ") {
-		reset();
-	}
-
-	if (key === "z") {
-		bfs(0);
-	}
 }
 
 function reset() {
-	visited.fill(false);
-	done.fill(false);
-	graph.forEach((row) => (row.length = 0));
-	from.fill(-1);
-	cells = [];
+	width = windowWidth;
+	heigth = windowHeight;
+
+	DIM_X = floor(width / SIZE);
+	DIM_Y = floor(heigth / SIZE);
+
+	resetGraph();
 
 	let startCell = floor(random(DIM_X * DIM_Y));
 	visited[startCell] = true;
 	cells.push(startCell);
 
-	width = Math.floor((windowWidth * 0.96) / SIZE) * SIZE;
-	heigth = Math.floor((windowHeight * 0.96) / SIZE) * SIZE;
+	//	width = Math.floor((windowWidth * 0.96) / SIZE) * SIZE;
+	//	heigth = Math.floor((windowHeight * 0.96) / SIZE) * SIZE;
 
 	createCanvas(width, heigth);
 	background(30, 30, 30);
 	noStroke();
-
-	DIM_X = width / SIZE;
-	DIM_Y = heigth / SIZE;
 }
 
 function bfs(x) {
@@ -202,8 +207,4 @@ function bfs(x) {
 			}
 		}
 	}
-}
-
-function mousePressed() {
-	reset();
 }

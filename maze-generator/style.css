@@ -6,3 +6,52 @@ body {
 canvas {
 	display: block;
 }
+
+.label-text {
+	margin: 0px;
+	font-size: 24px;
+	color: white;
+}
+
+.slider {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 200px;
+	height: 6px;
+	background: #e0e0e0;
+	outline: none;
+	border-radius: 2px;
+	transition: background 0.2s ease-in-out;
+	margin: 10px 0;
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: #eee;
+	cursor: pointer;
+	transition: background 0.2s ease-in-out;
+	border: none;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.slider:hover::-webkit-slider-thumb {
+	background: #bbb;
+}
+
+.slider::-moz-range-thumb {
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: #bbb;
+	cursor: pointer;
+	border: none;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.slider:hover::-moz-range-thumb {
+	background: #bbb;
+}
