@@ -3,9 +3,31 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 	let offsetX = 0;
 	let offsetY = 0;
 
-	// Internal mouse handlers for this panel
+	function getTouchCoords(touch) {
+		const rect = panel.elt.getBoundingClientRect();
+		return {
+			x: touch.clientX - rect.left,
+			y: touch.clientY - rect.top,
+			absX: touch.clientX,
+			absY: touch.clientY,
+		};
+	}
+
+	function isPointerOverExcludedElements(x, y) {
+		return excludeElements.some((el) => {
+			const rect = el.elt.getBoundingClientRect();
+			return (
+				x >= rect.left - padding &&
+				x <= rect.right + padding &&
+				y >= rect.top - padding &&
+				y <= rect.bottom + padding
+			);
+		});
+	}
+
+	// Mouse events
 	function mousePressedHandler() {
-		if (!excludeElements.some((el) => isMouseOverElement(el, padding))) {
+		if (!isPointerOverExcludedElements(mouseX, mouseY)) {
 			isDragging = true;
 			offsetX = mouseX - panel.position().x;
 			offsetY = mouseY - panel.position().y;
@@ -22,12 +44,42 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 		}
 	}
 
-	// Attach custom handlers to the panel
+	// Touch events
+	function touchStartHandler(e) {
+		const touch = e.touches[0];
+		const coords = getTouchCoords(touch);
+
+		if (!isPointerOverExcludedElements(coords.absX, coords.absY)) {
+			isDragging = true;
+			offsetX = coords.absX - panel.position().x;
+			offsetY = coords.absY - panel.position().y;
+		}
+	}
+
+	function touchMoveHandler(e) {
+		if (isDragging) {
+			const touch = e.touches[0];
+			const x = touch.clientX - offsetX;
+			const y = touch.clientY - offsetY;
+			panel.position(x, y);
+		}
+	}
+
+	function touchEndHandler() {
+		isDragging = false;
+	}
+
+	// Attach mouse handlers to panel
 	panel._customMousePressed = mousePressedHandler;
 	panel._customMouseReleased = mouseReleasedHandler;
 	panel._customMouseDragged = mouseDraggedHandler;
 
-	// Only attach global event hooks once
+	// Attach touch handlers directly to panel DOM element
+	panel.elt.addEventListener("touchstart", touchStartHandler, { passive: false });
+	panel.elt.addEventListener("touchmove", touchMoveHandler, { passive: false });
+	panel.elt.addEventListener("touchend", touchEndHandler);
+
+	// Only attach global mouse event hooks once
 	if (!window._draggablePanels) {
 		window._draggablePanels = [];
 
@@ -52,15 +104,4 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 	}
 
 	window._draggablePanels.push(panel);
-}
-
-// Utility: Check if mouse is over an HTML element
-function isMouseOverElement(el, padding) {
-	let rect = el.elt.getBoundingClientRect();
-	return (
-		mouseX >= rect.left - padding &&
-		mouseX <= rect.right + padding &&
-		mouseY >= rect.top - padding &&
-		mouseY <= rect.bottom + padding
-	);
 }
