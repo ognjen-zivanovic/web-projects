@@ -9,6 +9,11 @@ let SPEED = 1;
 let scores = new Map();
 
 function setup() {
+	if (windowWidth < 1000) {
+		tile_size = 150;
+		width = 4 * tile_size;
+		height = 4 * tile_size;
+	}
 	let canvas = createCanvas(width, height);
 	canvas.parent("centered-canvas");
 
@@ -123,12 +128,14 @@ function keyPressed() {
 let hasMoved = false;
 let startTouchX = 0;
 let startTouchY = 0;
+let startTouchTime = -1;
 
 function touchStarted() {
 	hasMoved = false;
 	if (touches == undefined || touches.length == 0) return;
 	startTouchX = touches[0].x;
 	startTouchY = touches[0].y;
+	startTouchTime = millis();
 }
 function touchMoved() {
 	if (touches == undefined || touches.length == 0) return;
@@ -163,6 +170,7 @@ function touchMoved() {
 
 function touchEnded() {
 	hasMoved = false;
+	startTouchTime = -1;
 }
 
 function grade(b) {
@@ -267,7 +275,7 @@ function solve() {
 function draw() {
 	background(205, 193, 180);
 
-	if (keyIsDown(32)) {
+	if (keyIsDown(32) || (startTouchTime != -1 && millis() - startTouchTime > 500)) {
 		// space
 		for (let i = 0; i < SPEED; i++) solve();
 	}
@@ -295,8 +303,10 @@ function draw() {
 				if (board[i][j] == 2048) fill("#EDC22E");
 				if (board[i][j] >= 4096) fill("#3E3933");
 
-				if (board[i][j] < 1024) textSize(40);
-				else textSize(25);
+				textSizeValue = 25;
+				if (board[i][j] < 1024) textSizeValue = 40;
+				if (windowWidth < 1000) textSizeValue *= 1.5;
+				textSize(textSizeValue);
 
 				rect(
 					j * tile_size + margin,
