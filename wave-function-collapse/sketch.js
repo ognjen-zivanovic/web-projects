@@ -1,8 +1,9 @@
 let DIM_X = 50;
 let DIM_Y = 50;
 let SIZE = 20;
-let SPEED = 10;
+let SPEED = 50;
 let tiles = [];
+let allTiles = [];
 let grid = [];
 let allowedTiles = [];
 let done = false;
@@ -16,7 +17,7 @@ const PIPES = 1;
 const CIRCLES = 2;
 const CIRCUIT = 3;
 
-const MODE = CIRCUIT;
+let MODE = PIPES;
 
 class Cell {
 	constructor(x, y, numNeighbours) {
@@ -64,8 +65,10 @@ class Tile {
 	}
 }
 
-function preload() {
-	if (MODE === PIPES) {
+function loadTilesType(tilesType) {
+	allTiles[tilesType] = [];
+	tiles = allTiles[tilesType];
+	if (tilesType === PIPES) {
 		tiles.push(new Tile("pipes/0.png", ["0", "0", "0", "0"]));
 		tiles.push(new Tile("pipes/1.png", ["0", "1", "0", "1"]));
 		tiles.push(new Tile("pipes/2.png", ["0", "1", "1", "1"]));
@@ -80,9 +83,7 @@ function preload() {
 		tiles.push(tiles[3].rotate(1));
 		tiles.push(tiles[3].rotate(2));
 		tiles.push(tiles[3].rotate(3));
-
-		console.log(tiles);
-	} else if (MODE === CIRCLES) {
+	} else if (tilesType === CIRCLES) {
 		tiles.push(new Tile("circles/0.png", ["0", "0", "0", "0"]));
 		tiles.push(new Tile("circles/1.png", ["0", "1", "1", "1"]));
 		tiles.push(new Tile("circles/2.png", ["0", "1", "0", "1"]));
@@ -112,7 +113,7 @@ function preload() {
 		tiles.push(tiles[14].rotate(1));
 		tiles.push(tiles[14].rotate(2));
 		tiles.push(tiles[14].rotate(3));
-	} else if (MODE === CIRCUIT) {
+	} else if (tilesType === CIRCUIT) {
 		tiles.push(new Tile("circuit/1.png", ["AAA", "AAA", "AAA", "AAA"]));
 		tiles.push(new Tile("circuit/2.png", ["BDB", "BCB", "BDB", "BCB"]));
 		tiles.push(new Tile("circuit/3.png", ["BDB", "BBA", "AAA", "ABB"]));
@@ -169,21 +170,22 @@ function preload() {
 	}
 }
 
+function loadTiles() {
+	loadTilesType(PIPES);
+	loadTilesType(CIRCLES);
+	loadTilesType(CIRCUIT);
+	tiles = allTiles[MODE];
+}
+
+function preload() {
+	loadTiles();
+}
+
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
 }
 
-function setup() {
-	resizeCanvas(windowWidth, windowHeight);
-	DIM_X = windowWidth / SIZE;
-	DIM_Y = windowHeight / SIZE;
-	for (let y = 0; y < DIM_Y; y++) {
-		grid[y] = [];
-		for (let x = 0; x < DIM_X; x++) {
-			grid[y][x] = new Cell(x, y, tiles.length);
-		}
-	}
-
+function setupGraph() {
 	// Setup allowedTiles logic
 	for (let i = 0; i < tiles.length; i++) {
 		allowedTiles[i] = [];
@@ -198,6 +200,119 @@ function setup() {
 			}
 		}
 	}
+
+	DIM_X = ceil(windowWidth / SIZE);
+	DIM_Y = ceil(windowHeight / SIZE);
+	grid = [];
+	for (let y = 0; y < DIM_Y; y++) {
+		grid[y] = [];
+		for (let x = 0; x < DIM_X; x++) {
+			grid[y][x] = new Cell(x, y, tiles.length);
+		}
+	}
+	background(100);
+}
+
+function reset() {
+	done = false;
+	tiles = allTiles[MODE];
+	setupGraph();
+}
+
+function setup() {
+	setupGraph();
+
+	controlPanel = createDiv();
+	controlPanel.position(0, 0, "absolute");
+
+	controls = createDiv();
+	controls.class("controls");
+
+	// Create labels
+	speedText = createP("Speed");
+	sizeText = createP("Size");
+
+	speedText.class("label");
+	sizeText.class("label");
+
+	// Create sliders
+	speedSlider = createSlider(1, 100, SPEED);
+	sizeSlider = createSlider(1, 50, SIZE);
+
+	speedSlider.class("slider");
+	sizeSlider.class("slider");
+
+	speedSlider.input(() => {
+		SPEED = speedSlider.value();
+	});
+	sizeSlider.input(() => {
+		SIZE = sizeSlider.value();
+		reset();
+	});
+
+	// add buttons
+	resetButton = createButton("Reset");
+	resetButton.mousePressed(reset);
+	resetButton.class("button");
+
+	radioButtonsContainer = createDiv();
+	radioButtonsContainer.style("display", "flex");
+	radioButtonsContainer.style("flex-direction", "row");
+	radioButtonsContainer.style("gap", "1rem");
+
+	circuitButton = createButton("Circuit");
+	circuitButton.class("button");
+	pipesButton = createButton("Pipes");
+	pipesButton.class("button");
+	circlesButton = createButton("Circles");
+	circlesButton.class("button");
+
+	radioButtonsContainer.child(circuitButton);
+	radioButtonsContainer.child(pipesButton);
+	radioButtonsContainer.child(circlesButton);
+
+	pipesButton.mousePressed(function () {
+		MODE = PIPES;
+		pipesButton.style("background-color", "#aaa");
+		circuitButton.style("background-color", "");
+		circlesButton.style("background-color", "");
+	});
+
+	circuitButton.mousePressed(function () {
+		MODE = CIRCUIT;
+		circuitButton.style("background-color", "#aaa");
+		pipesButton.style("background-color", "");
+		circlesButton.style("background-color", "");
+	});
+
+	circlesButton.mousePressed(function () {
+		MODE = CIRCLES;
+		circlesButton.style("background-color", "#aaa");
+		pipesButton.style("background-color", "");
+		circuitButton.style("background-color", "");
+	});
+
+	if (MODE === PIPES) {
+		pipesButton.style("background-color", "#aaa");
+	} else if (MODE === CIRCUIT) {
+		circuitButton.style("background-color", "#aaa");
+	} else if (MODE === CIRCLES) {
+		circlesButton.style("background-color", "#aaa");
+	}
+
+	// Add them to the controls div in order
+	controls.child(speedText);
+	controls.child(speedSlider);
+	controls.child(sizeText);
+	controls.child(sizeSlider);
+	controls.child(resetButton);
+
+	controls.child(radioButtonsContainer);
+
+	controlPanel.child(controls);
+	makeDraggablePanel(controlPanel, [speedSlider, sizeSlider], 15);
+
+	resizeCanvas(windowWidth, windowHeight);
 }
 
 function update() {
@@ -228,9 +343,12 @@ function update() {
 
 		let randomCell = random(cellsWithLeastEntropy);
 		randomCell.collapsed = true;
-		if (minEntropy === 0) return;
+		if (minEntropy === 0) {
+			return;
+		}
 		randomCell.tileID = random(randomCell.possibleNeighbours);
 		randomCell.possibleNeighbours = [randomCell.tileID];
+		randomCell.draw();
 
 		let x = randomCell.x;
 		let y = randomCell.y;
@@ -245,18 +363,5 @@ function update() {
 }
 
 function draw() {
-	background(255);
-	for (let y = 0; y < DIM_Y; y++) {
-		for (let x = 0; x < DIM_X; x++) {
-			grid[y][x].draw();
-		}
-	}
-	for (let i = 0; i < 5; i++) {
-		update();
-	}
-}
-
-function mousePressed() {
-	done = false;
-	setup();
+	update();
 }
