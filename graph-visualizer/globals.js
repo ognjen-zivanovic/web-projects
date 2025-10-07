@@ -2,8 +2,8 @@ let scale = 1;
 let width = 800;
 let height = 800;
 
-let camera_x = width / 2;
-let camera_y = height / 2;
+let camera_x;
+let camera_y;
 
 let arr = [];
 let n = 0;
@@ -11,8 +11,8 @@ let n = 0;
 let arr2 = [];
 let m = 0;
 
-let myRadio;
-let slider1;
+let radioValue = "";
+let edgeLenSlider;
 let slider2;
 let slider3;
 let slider4;

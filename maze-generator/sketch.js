@@ -36,21 +36,14 @@ function setup() {
 	controlPanel.position(0, 0, "absolute");
 
 	let controls = createDiv();
-	controls.style("background-color", "rgb(10, 10, 10)");
-	controls.style("padding", "0.75rem");
-	controls.style("border-radius", "0.5rem");
-
-	// Use flexbox for layout
-	controls.style("display", "flex");
-	controls.style("flex-direction", "column");
-	controls.style("gap", "0.3rem");
+	controls.class("controls");
 
 	// Create labels
 	speedText = createP("Speed");
 	sizeText = createP("Size");
 
-	speedText.class("label-text");
-	sizeText.class("label-text");
+	speedText.class("label");
+	sizeText.class("label");
 
 	// Create sliders
 	speedSlider = createSlider(1, 100, SPEED);
@@ -70,9 +63,7 @@ function setup() {
 
 	resetButton = createButton("Reset");
 	resetButton.mousePressed(reset);
-	resetButton.style("padding", "0.5rem");
-	resetButton.style("margin-top", "0.25rem");
-	resetButton.style("font-size", "1.5rem");
+	resetButton.class("button");
 	controls.child(resetButton);
 
 	controlPanel.child(controls);

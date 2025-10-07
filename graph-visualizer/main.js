@@ -1,6 +1,8 @@
 function setup() {
 	width = windowWidth;
 	height = windowHeight;
+	camera_x = width / 2;
+	camera_y = height / 2;
 	createCanvas(width, height);
 
 	createUI();
@@ -40,7 +42,7 @@ function draw() {
 }
 
 function update() {
-	optimal_edge_len = slider1.value();
+	optimal_edge_len = edgeLenSlider.value();
 
 	for (var i = 0; i < numIterationsPerframe; i++) {
 		simulate();
