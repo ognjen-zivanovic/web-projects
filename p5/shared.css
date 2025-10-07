@@ -96,3 +96,11 @@
 	flex-direction: column;
 	gap: 0.3rem;
 }
+
+#centered-canvas {
+	display: flex; /* Make body a flex container */
+	justify-content: center; /* Center children horizontally */
+	align-items: center; /* Center children vertically */
+	min-height: 100vh; /* Ensure body takes full viewport height */
+	margin: 0; /* Remove default body margin */
+}

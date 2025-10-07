@@ -1,7 +1,13 @@
-html, body {
-  margin: 0;
-  padding: 0;
+html,
+body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
 }
 canvas {
-  display: block;
+	display: block;
+}
+
+#centered-canvas {
+	flex-direction: column;
 }
