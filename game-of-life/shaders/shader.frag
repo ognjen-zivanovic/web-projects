@@ -8,19 +8,24 @@ varying vec2 pos;
 uniform sampler2D filter_background;
 uniform vec2 filter_res;
 
+vec2 wrap(vec2 v) {
+    return mod(v, 1.0);
+}
+
 void main() {
   vec2 normal_res = vec2(1.0/filter_res.x, 1.0/filter_res.y);
   vec4 col = texture2D(filter_background, pos);
 
-  vec4 col_levo = texture2D(filter_background, pos + vec2(-normal_res.x, 0));
-  vec4 col_desno = texture2D(filter_background, pos + vec2(normal_res.x, 0));
-  vec4 col_gore = texture2D(filter_background, pos + vec2(0, -normal_res.y));
-  vec4 col_dole = texture2D(filter_background, pos + vec2(0, normal_res.y));
+  // make all positions wrap around the screen
+  vec4 col_levo = texture2D(filter_background, wrap(pos + vec2(-normal_res.x, 0)));
+  vec4 col_desno = texture2D(filter_background, wrap(pos + vec2(normal_res.x, 0)));
+  vec4 col_gore = texture2D(filter_background, wrap(pos + vec2(0, -normal_res.y)));
+  vec4 col_dole = texture2D(filter_background, wrap(pos + vec2(0, normal_res.y)));
 
-  vec4 col_levo_gore = texture2D(filter_background, pos + vec2(-normal_res.x, -normal_res.y));
-  vec4 col_levo_dole = texture2D(filter_background, pos + vec2(-normal_res.x, normal_res.y));
-  vec4 col_desno_gore = texture2D(filter_background, pos + vec2(normal_res.x, -normal_res.y));
-  vec4 col_desno_dole = texture2D(filter_background, pos + vec2(normal_res.x, normal_res.y));
+  vec4 col_levo_gore = texture2D(filter_background, wrap(pos + vec2(-normal_res.x, -normal_res.y)));
+  vec4 col_levo_dole = texture2D(filter_background, wrap(pos + vec2(-normal_res.x, normal_res.y)));
+  vec4 col_desno_gore = texture2D(filter_background, wrap(pos + vec2(normal_res.x, -normal_res.y)));
+  vec4 col_desno_dole = texture2D(filter_background, wrap(pos + vec2(normal_res.x, normal_res.y)));
 
   float levo = col_levo.r;
   float desno = col_desno.r;

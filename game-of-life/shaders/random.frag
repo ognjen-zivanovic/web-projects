@@ -15,7 +15,12 @@ float rand(vec2 co){
 
 void main() {
   float r = floor(rand(pos) + 0.5);
-  gl_FragColor = vec4(r, r,r, 1.0);
+  vec4 col = texture2D(filter_background, pos);
+  if (col.r >= 0.19 && col.r <= 0.21) {
+    gl_FragColor = vec4(r, r, r, 1.0);
+  } else {
+    gl_FragColor = col;
+  }
 }
 
 
