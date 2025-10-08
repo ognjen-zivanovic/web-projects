@@ -4,7 +4,24 @@ body {
 	padding: 0;
 	overflow: hidden;
 	overscroll-behavior: none;
+	background-color: rgb(220, 220, 220);
 }
 canvas {
 	display: block;
+}
+
+#centered-canvas {
+	flex-direction: column;
+}
+
+.button-style {
+	/* dark dark gray */
+	background-color: #333;
+	border: none;
+	color: white;
+	text-align: center;
+	font-size: 24px;
+	cursor: pointer;
+	transition-duration: 0.4s;
+	border-radius: 5px;
 }

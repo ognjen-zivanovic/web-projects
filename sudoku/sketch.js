@@ -85,6 +85,12 @@ let board_heigth = 3 * 3 * size;
 let selected_i = -1;
 let selected_j = -1;
 
+function startSolving() {
+	reset();
+	done = false;
+	impossible = false;
+}
+
 function setup() {
 	canvas = createCanvas(board_width + 100, board_heigth + 100);
 	canvas.parent("centered-canvas");
@@ -104,6 +110,33 @@ function setup() {
 	});
 	inputTextBox.style("z-index", "10");
 	inputTextBox.style("position", "absolute");
+
+	// add buttons for clear and solve, they should be horizontal and be the same width and take up the whole width
+	let buttonsContainer = createDiv();
+	buttonsContainer.parent("centered-canvas");
+	buttonsContainer.style("display", "flex");
+	buttonsContainer.style("flex-direction", "row");
+	buttonsContainer.style("gap", "20px");
+
+	let clearButton = createButton("Clear");
+	clearButton.size(board_width / 2 - 10, 50);
+	clearButton.class("button-style");
+	clearButton.mousePressed(() => {
+		resetStart();
+		resetBoard();
+		resetCollapsed();
+		selected_i = selected_j = -1;
+	});
+
+	let solveButton = createButton("Solve");
+	solveButton.size(board_width / 2 - 10, 50);
+	solveButton.class("button-style");
+	solveButton.mousePressed(() => {
+		startSolving();
+	});
+
+	buttonsContainer.child(clearButton);
+	buttonsContainer.child(solveButton);
 
 	reset();
 }
@@ -248,20 +281,6 @@ function draw() {
 		stroke(0, 255, 0);
 		rect((selected_i - 1) * size, (selected_j - 1) * size, size, size);
 		pop();
-	}
-}
-
-function keyPressed() {
-	if (key == " ") {
-		reset();
-		done = false;
-		impossible = false;
-	}
-
-	if (keyCode == ESCAPE) {
-		resetStart();
-		resetBoard();
-		resetCollapsed();
 	}
 }
 
