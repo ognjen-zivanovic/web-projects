@@ -236,6 +236,12 @@ function update() {
 }
 
 function draw() {
+	if (selected_i > -1 && selected_j > -1) {
+		if (document.activeElement !== inputTextBox.elt) {
+			inputTextBox.elt.focus();
+		}
+	}
+
 	while (!done && !impossible) {
 		update();
 	}
@@ -293,9 +299,6 @@ function handlePress(x, y) {
 		selected_i = selected_j = -1;
 		return;
 	}
-	setTimeout(() => {
-		inputTextBox.elt.focus();
-	}, 0);
 }
 
 function mousePressed() {

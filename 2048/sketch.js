@@ -34,7 +34,7 @@ function setup() {
 	//console.log(scores);
 
 	instructionsText = createP(
-		"Use arrow keys or swipe to play. Press space or hold to let the computer make the moves."
+		"Use arrow keys or swipe to play. Touch and hold or press the space key to let the computer make the moves."
 	);
 	instructionsText.class("label");
 	instructionsText.size((7 / 8) * width);
