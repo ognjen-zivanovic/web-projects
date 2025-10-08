@@ -5,6 +5,7 @@ body {
 	font-family: sans-serif;
 	overflow: hidden;
 	overscroll-behavior: none;
+	user-select: none;
 }
 canvas {
 	display: block;

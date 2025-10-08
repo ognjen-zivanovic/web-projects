@@ -34,17 +34,19 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 	}
 
 	// Mouse events
-	function mousePressedHandler() {
-		if (!isPointerOverExcludedElements(mouseX, mouseY)) {
+	function mousePressedHandler(event) {
+		let posX = event.clientX;
+		let posY = event.clientY;
+		if (!isPointerOverExcludedElements(posX, posY)) {
 			isDragging = true;
-			offsetX = mouseX - panel.position().x;
-			offsetY = mouseY - panel.position().y;
+			offsetX = posX - panel.position().x;
+			offsetY = posY - panel.position().y;
 			return true;
 		}
 		return false;
 	}
 
-	function mouseReleasedHandler() {
+	function mouseReleasedHandler(event) {
 		if (isDragging) {
 			isDragging = false;
 			return true;
@@ -52,9 +54,11 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 		return false;
 	}
 
-	function mouseDraggedHandler() {
+	function mouseDraggedHandler(event) {
+		let posX = event.clientX;
+		let posY = event.clientY;
 		if (isDragging) {
-			panel.position(mouseX - offsetX, mouseY - offsetY);
+			panel.position(posX - offsetX, posY - offsetY);
 			return true;
 		}
 		return false;
@@ -64,11 +68,12 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 	function touchStartHandler(e) {
 		const touch = e.touches[0];
 		const coords = getTouchCoords(touch);
+		console.log(coords);
 
 		if (!isPointerOverExcludedElements(coords.absX, coords.absY)) {
 			isDragging = true;
-			offsetX = coords.absX - panel.position().x;
-			offsetY = coords.absY - panel.position().y;
+			offsetX = coords.x;
+			offsetY = coords.y;
 			return true;
 		}
 		return false;
@@ -79,6 +84,7 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 			const touch = e.touches[0];
 			const x = touch.clientX - offsetX;
 			const y = touch.clientY - offsetY;
+			console.log(x, y);
 			panel.position(x, y);
 			return true;
 		}
@@ -113,7 +119,7 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 
 		window.mousePressed = function (event) {
 			for (p of window._draggablePanels) {
-				if (p._customMousePressed()) {
+				if (p._customMousePressed(event)) {
 					return;
 				}
 			}
@@ -123,7 +129,7 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 
 		window.mouseReleased = function (event) {
 			for (p of window._draggablePanels) {
-				if (p._customMouseReleased()) {
+				if (p._customMouseReleased(event)) {
 					return;
 				}
 			}
@@ -132,7 +138,7 @@ function makeDraggablePanel(panel, excludeElements = [], padding = 0) {
 
 		window.mouseDragged = function (event) {
 			for (p of window._draggablePanels) {
-				if (p._customMouseDragged()) {
+				if (p._customMouseDragged(event)) {
 					return;
 				}
 			}

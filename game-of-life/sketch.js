@@ -18,6 +18,8 @@ function preload() {
 
 let canvas;
 
+let cpuControlsAdded = false;
+
 function setupCpu() {
 	canvas = createCanvas(widthCpu * pixelSize, heightCpu * pixelSize, P2D);
 	canvas.parent("centered-canvas");
@@ -30,6 +32,33 @@ function setupCpu() {
 			arr2[i][j] = 0;
 		}
 	}
+
+	if (!cpuControlsAdded) {
+		cpuControlsAdded = true;
+		let controlPanel = createDiv();
+		controlPanel.position(0, 0, "absolute");
+
+		let controls = createDiv();
+		controls.class("controls");
+
+		let sizeText = createP("Size");
+		sizeText.class("label");
+
+		let sizeSlider = createSlider(10, 200, 20);
+		sizeSlider.class("slider");
+		sizeSlider.input(() => {
+			widthCpu = sizeSlider.value();
+			heightCpu = sizeSlider.value();
+			setupCpu();
+		});
+
+		controls.child(sizeText);
+		controls.child(sizeSlider);
+
+		controlPanel.child(controls);
+
+		makeDraggablePanel(controlPanel, [sizeSlider], 10);
+	}
 }
 
 function setupGpu() {
@@ -38,28 +67,6 @@ function setupGpu() {
 }
 
 function setup() {
-	let controlPanel = createDiv();
-	controlPanel.position(0, 0, "absolute");
-
-	let controls = createDiv();
-	controls.class("controls");
-
-	let sizeText = createP("Size");
-	sizeText.class("label");
-	sizeText.style("display", "none");
-
-	let sizeSlider = createSlider(10, 200, 20);
-	sizeSlider.class("slider");
-	sizeSlider.input(() => {
-		widthCpu = sizeSlider.value();
-		heightCpu = sizeSlider.value();
-		setupCpu();
-	});
-	sizeSlider.style("display", "none");
-
-	controls.child(sizeText);
-	controls.child(sizeSlider);
-
 	let buttonsContainer = createDiv();
 	buttonsContainer.class("buttons-container");
 	buttonsContainer.style("display", "flex");
@@ -71,8 +78,6 @@ function setup() {
 	cpuButton.mousePressed(() => {
 		MODE = CPU;
 		setupCpu();
-		sizeSlider.style("display", "block");
-		sizeText.style("display", "block");
 		buttonsContainer.style("display", "none");
 	});
 
@@ -81,18 +86,12 @@ function setup() {
 	gpuButton.mousePressed(() => {
 		MODE = GPU;
 		setupGpu();
-		sizeSlider.style("display", "none");
 		buttonsContainer.style("display", "none");
 	});
 
 	buttonsContainer.child(cpuButton);
 	buttonsContainer.child(gpuButton);
-
-	controls.child(buttonsContainer);
-
-	controlPanel.child(controls);
-
-	makeDraggablePanel(controlPanel, [sizeSlider], 0);
+	buttonsContainer.parent("centered-canvas");
 }
 
 function drawCpu() {

@@ -1,4 +1,5 @@
-var block_size = 40;
+var block_size = 80;
+var margin = 4;
 
 var n = 10,
 	m = 10;
@@ -12,8 +13,15 @@ var tren_k = -1;
 
 var canvasOffset;
 
+function preload() {
+	if (windowHeight <= 1000) {
+		block_size = 40;
+		margin = 2;
+	}
+}
+
 function setup() {
-	canvas = createCanvas(400, 600);
+	canvas = createCanvas(10 * block_size, 15 * block_size);
 	canvas.parent("centered-canvas");
 	// console log the position of the canvas relative to the viewpoer
 	canvasOffset = canvas.position();
@@ -329,7 +337,7 @@ function draw_map() {
 				var c = map[i][j];
 
 				fill(getFillColor(c));
-				rect(j * block_size, i * block_size, block_size, block_size, 2);
+				rect(j * block_size, i * block_size, block_size, block_size, margin);
 
 				pop();
 			}
