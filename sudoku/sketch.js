@@ -3,7 +3,13 @@ let collapsed = [];
 
 const size = 80;
 
+const offsetX = 50;
+const offsetY = 50;
+
+let canvasOffset;
+
 let start = [];
+let inputTextBox;
 
 function resetStart() {
 	for (let i = 1; i <= 9; i++) {
@@ -80,7 +86,24 @@ let selected_i = -1;
 let selected_j = -1;
 
 function setup() {
-	createCanvas(board_width + 100, board_heigth + 100);
+	canvas = createCanvas(board_width + 100, board_heigth + 100);
+	canvas.parent("centered-canvas");
+	canvasOffset = canvas.elt.getBoundingClientRect();
+
+	inputTextBox = createInput();
+	inputTextBox.position(-100, -100);
+	inputTextBox.size(0);
+	inputTextBox.input(function (value) {
+		charValue = value.data;
+		inputTextBox.value("");
+		if (selected_i == -1 || selected_i == -1) return;
+		if (charValue >= "0" && charValue <= "9") {
+			start[selected_i][selected_j] = charValue - "0";
+			board[selected_i][selected_j] = [charValue - "0"];
+		}
+	});
+	inputTextBox.style("z-index", "10");
+	inputTextBox.style("position", "absolute");
 
 	reset();
 }
@@ -185,6 +208,7 @@ function draw() {
 	}
 	background(220);
 
+	translate(offsetX, offsetY);
 	push();
 
 	noStroke();
@@ -192,7 +216,7 @@ function draw() {
 	rect(0, 0, board_width, board_heigth);
 	pop();
 
-	for (let i = 1; i <= 9; i++) {
+	for (let i = 0; i <= 9; i++) {
 		if (i % 3 == 0) strokeWeight(2);
 		else strokeWeight(1);
 		line(0, i * size, board_width, i * size);
@@ -209,6 +233,8 @@ function draw() {
 			}
 			if (board[i][j].length == 1) {
 				text(board[i][j], (i - 1) * size, (j - 1) * size, size, size);
+			} else if (start[i][j] != -1) {
+				text(start[i][j], (i - 1) * size, (j - 1) * size, size, size);
 			}
 			if (start[i][j] != -1) {
 				pop();
@@ -237,19 +263,29 @@ function keyPressed() {
 		resetBoard();
 		resetCollapsed();
 	}
-	if (selected_i == -1 || selected_i == -1) return;
-	if (key >= "0" && key <= "9") {
-		start[selected_i][selected_j] = key - "0";
-		board[selected_i][selected_j] = [key - "0"];
-	}
 }
 
-function mousePressed() {
-	selected_i = floor(mouseX / size) + 1;
-	selected_j = floor(mouseY / size) + 1;
+function handlePress(x, y) {
+	if (!x || !y) return;
+	selected_i = floor((x - offsetX) / size) + 1;
+	selected_j = floor((y - offsetY) / size) + 1;
 
 	if (selected_i <= 0 || selected_i > 9 || selected_j <= 0 || selected_j > 9) {
 		selected_i = selected_j = -1;
 		return;
 	}
+	setTimeout(() => {
+		inputTextBox.elt.focus();
+	}, 0);
+}
+
+function mousePressed() {
+	handlePress(mouseX, mouseY);
+}
+
+function touchEnded(event) {
+	if (!event.changedTouches) return;
+	let x = event.changedTouches[0]?.clientX - canvasOffset.left;
+	let y = event.changedTouches[0]?.clientY - canvasOffset.top;
+	handlePress(x, y);
 }
