@@ -257,36 +257,47 @@ function setup() {
 
 }
 
-// on click (touch) event
+function touchStarted() {
+  handlePress();
+  return false; // prevents scrolling / default behavior
+}
+
 function mousePressed() {
-	// remove the cell i clicked on
-	let x = floor(mouseX / size);
-	let y = floor(mouseY / size);
-	if (x < 0 || x >= m || y < 0 || y >= n) {
-		return;
-	}
-	if (snakes[y][x]) {
-		let head = heads[snakes[y][x]];
-		let [dx, dy] = get_dx_dy(head[2]);
-		let check_y = head[0];
-		let check_x = head[1];
-		check_x += dx;
-		check_y += dy;
-		while (check_x >= 0 && check_x < m && check_y >= 0 && check_y < n) {
-			if (data[check_y][check_x] || data[check_y][check_x] != 0) {
-				return;
-			}
-			check_x += dx;
-			check_y += dy;
-		}
-	};
-	for (let i = 0; i < n; i++) {
-		for (let j = 0; j < m; j++) {
-			if (snakes[i][j] == snakes[y][x]) {
-				data[i][j] = 0;
-			}
-		}
-	}
+  handlePress();
+}
+
+function handlePress() {
+  let x = floor(mouseX / size);
+  let y = floor(mouseY / size);
+
+  if (x < 0 || x >= m || y < 0 || y >= n) return;
+
+  if (snakes[y][x]) {
+    let head = heads[snakes[y][x]];
+    let [dx, dy] = get_dx_dy(head[2]);
+
+    let check_y = head[0];
+    let check_x = head[1];
+
+    check_x += dx;
+    check_y += dy;
+
+    while (check_x >= 0 && check_x < m && check_y >= 0 && check_y < n) {
+      if (data[check_y][check_x] || data[check_y][check_x] != 0) {
+        return;
+      }
+      check_x += dx;
+      check_y += dy;
+    }
+  }
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+      if (snakes[i][j] == snakes[y][x]) {
+        data[i][j] = 0;
+      }
+    }
+  }
 }
 
 function draw() {
