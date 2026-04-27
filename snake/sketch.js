@@ -126,7 +126,6 @@ function go_in_direction(x, y, direction) {
 	if (cnt < 1) {
 		return [x, y];
 	}
-	console.log("go_in_direction", x, y, direction, cnt);
 	let [dx, dy] = get_dx_dy(direction);
 
 	// remove the cell from the free cells list
@@ -154,7 +153,6 @@ function go_in_direction(x, y, direction) {
 
 
 function add_random_snake(start) {
-	//console.log("add_random_snake", start);
 	let y = start[0];
 	let x = start[1];
 	let direction = start[2];
@@ -202,11 +200,9 @@ function setup() {
 	// get the size of the screen
 	canvas = createCanvas(m * size, n * size);
 	canvas.parent("centered-canvas");
-	// console log the position of the canvas relative to the viewpoer
 	canvasOffset = canvas.position();
 
 	while (free_cells.length > 0) {
-		console.log("free_cells", free_cells.length);
 		// pick a random square
 		let found = false;
 		let cnt = 50;
@@ -263,9 +259,6 @@ function setup() {
 
 // on click (touch) event
 function mousePressed() {
-	console.log("mousePressed");
-	console.log("Clicked/Tapped at: " + mouseX + ", " + mouseY);
-
 	// remove the cell i clicked on
 	let x = floor(mouseX / size);
 	let y = floor(mouseY / size);
@@ -326,7 +319,19 @@ function draw() {
 			let head = heads[snakes[i][j]];
 			if (head[0] == i && head[1] == j && data[i][j] != 0) {
 				fill(255, 0, 0);
-				rect(j * size + size / 2 - size / 6, i * size + size / 2 - size / 6, size / 3, size / 3);
+				let head_direction = head[2];
+				if (head_direction === TOP) {
+					rect(j * size + size / 2 - size / 6, i * size, size / 3, size / 6);
+				}
+				else if (head_direction === RIGHT) {
+					rect((j + 1) * size  - size / 6, i * size + size / 2 - size / 6, size / 6, size / 3);
+				}
+				else if (head_direction === BOTTOM) {
+					rect(j * size + size / 2 - size / 6, (i + 1) * size - size / 6, size / 3, size / 6);
+				}
+				else if (head_direction === LEFT) {
+					rect(j * size, i * size + size / 2 - size / 6, size / 6, size / 3);
+				}
 			}
 		}
 	}
