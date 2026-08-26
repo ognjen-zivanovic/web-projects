@@ -1,38 +1,41 @@
 let board = [];
 let collapsed = [];
+let board_size = 3 * 3;
 
-const size = 80;
+const size = 60;
+let board_width = board_size * size;
+let board_heigth = board_size * size;
+const number_button_size = (board_width - 90) / 10;
 
-const offsetX = 50;
-const offsetY = 50;
+const offsetX = 30;
+const offsetY = 30;
 
 let canvasOffset;
 
 let start = [];
-let inputTextBox;
 
 function resetStart() {
-	for (let i = 1; i <= 9; i++) {
+	for (let i = 1; i <= board_size; i++) {
 		start[i] = [];
-		for (let j = 1; j <= 9; j++) {
+		for (let j = 1; j <= board_size; j++) {
 			start[i][j] = -1;
 		}
 	}
 }
 
 function resetBoard() {
-	for (let i = 1; i <= 9; i++) {
+	for (let i = 1; i <= board_size; i++) {
 		board[i] = [];
-		for (let j = 1; j <= 9; j++) {
+		for (let j = 1; j <= board_size; j++) {
 			board[i][j] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 		}
 	}
 }
 
 function resetCollapsed() {
-	for (let i = 1; i <= 9; i++) {
+	for (let i = 1; i <= board_size; i++) {
 		collapsed[i] = [];
-		for (let j = 1; j <= 9; j++) {
+		for (let j = 1; j <= board_size; j++) {
 			collapsed[i][j] = false;
 		}
 	}
@@ -46,29 +49,56 @@ function reset() {
 	resetBoard();
 	resetCollapsed();
 
-	// start[1][1] = 8;
-	// start[2][3] = 7;
-	// start[2][4] = 5;
-	// start[2][9] = 9;
-	// start[3][2] = 3;
-	// start[3][7] = 1;
-	// start[3][8] = 8;
+	for (let i = 1; i <= 9; i++) {
+		let seen = [];
+		for (let j = 1; j <= 9; j++) {
+			if (seen[start[i][j]]) {
+				impossible = true;
+				badRow = i;
+				badVal = start[i][j];
+				return;
+			}
+			if (start[i][j] > -1) {
+				seen[start[i][j]] = true;
+			}
+		}
+	}
+	for (let i = 1; i <= 9; i++) {
+		let seen = [];
+		for (let j = 1; j <= 9; j++) {
+			if (seen[start[j][i]]) {
+				impossible = true;
+				badCol = i;
+				badVal = start[j][i];
+				return;
+			}
+			if (start[j][i] > -1) {
+				seen[start[j][i]] = true;
+			}
+		}
+	}
 
-	// start[4][2] = 6;
-	// start[4][6] = 1;
-	// start[4][8] = 5;
-	// start[5][3] = 9;
-	// start[5][5] = 4;
-	// start[6][4] = 7;
-	// start[6][5] = 5;
+	for (let quadRow = 0; quadRow < 3; quadRow++) {
+		for (let quadCol = 0; quadCol < 3; quadCol++) {
+			let seen = [];
+			for (let i = 1; i <= 3; i++) {
+				for (let j = 1; j <= 3; j++) {
+					let row = quadRow * 3 + i;
+					let col = quadCol * 3 + j;
+					if (seen[start[row][col]]) {
+						impossible = true;
+						badQuad = quadRow * 3 + quadCol + 1;
+						badVal = start[row][col];
+						return;
+					}
+					if (start[row][col] > -1) {
+						seen[start[row][col]] = true;
+					}
+				}
+			}
+		}
+	}
 
-	// start[7][3] = 2;
-	// start[7][5] = 7;
-	// start[7][9] = 4;
-	// start[8][6] = 3;
-	// start[8][7] = 6;
-	// start[8][8] = 1;
-	// start[9][7] = 8;
 
 	for (let i = 1; i <= 9; i++) {
 		for (let j = 1; j <= 9; j++) {
@@ -79,39 +109,46 @@ function reset() {
 	}
 }
 
-let board_width = 3 * 3 * size;
-let board_heigth = 3 * 3 * size;
 
 let selected_i = -1;
 let selected_j = -1;
 
+function calculateQuad(i, j) {
+	let quadRow = floor((i - 1) / 3);
+	let quadCol = floor((j - 1) / 3);
+	let quadIndex = quadRow * 3 + quadCol + 1;
+	return quadIndex;
+}
+
 function startSolving() {
-	reset();
 	done = false;
 	impossible = false;
+	badRow = -1;
+	badCol = -1;
+	badVal = -1;
+	badQuad = -1;
+	reset();
+}
+
+function handleInput(intValue) {
+	start[selected_i][selected_j] = intValue != 0 ? intValue : -1;
+	board[selected_i][selected_j] = intValue != 0 ? [intValue] : [1, 2, 3, 4, 5, 6, 7, 8, 9];
+}
+
+function keyPressed() {
+	charValue = key;
+	if (selected_i == -1 || selected_j == -1) return;
+	if (charValue >= "0" && charValue <= "9") {
+		intValue = charValue - "0";
+		handleInput(intValue);
+	}
 }
 
 function setup() {
-	canvas = createCanvas(board_width + 100, board_heigth + 100);
+	canvas = createCanvas(board_width + 2 * offsetX, board_heigth + 2 * offsetY);
 	canvas.parent("centered-canvas");
 	canvasOffset = canvas.elt.getBoundingClientRect();
 
-	inputTextBox = createInput();
-	inputTextBox.position(-100, -100);
-	inputTextBox.size(0);
-	inputTextBox.input(function (value) {
-		charValue = value.data;
-		inputTextBox.value("");
-		if (selected_i == -1 || selected_i == -1) return;
-		if (charValue >= "0" && charValue <= "9") {
-			start[selected_i][selected_j] = charValue - "0";
-			board[selected_i][selected_j] = [charValue - "0"];
-		}
-	});
-	inputTextBox.style("z-index", "10");
-	inputTextBox.style("position", "absolute");
-
-	// add buttons for clear and solve, they should be horizontal and be the same width and take up the whole width
 	let buttonsContainer = createDiv();
 	buttonsContainer.parent("centered-canvas");
 	buttonsContainer.style("display", "flex");
@@ -138,11 +175,34 @@ function setup() {
 	buttonsContainer.child(clearButton);
 	buttonsContainer.child(solveButton);
 
+	let numbersContainer = createDiv();
+	numbersContainer.parent("centered-canvas");
+	numbersContainer.style("display", "flex");
+	numbersContainer.style("flex-direction", "row");
+	numbersContainer.style("gap", "10px");
+	numbersContainer.style("margin-top", "15px");
+
+	for (let i = 0; i <= board_size; i++) {
+		let numberButton = createButton(i > 0 ? i.toString() : "X");
+
+		numberButton.size(number_button_size, number_button_size);
+		numberButton.class("button-style");
+		numberButton.mousePressed(() => {
+			if (selected_i == -1 || selected_j == -1) return;
+			handleInput(i);
+		});
+		numbersContainer.child(numberButton);
+	}
+
 	reset();
 }
 
 let done = true;
 let impossible = false;
+let badRow = -1;
+let badCol = -1;
+let badQuad = -1;
+let badVal = -1;
 
 function collapse(ci, cj, val, starting = false) {
 	board[ci][cj] = [val];
@@ -236,11 +296,6 @@ function update() {
 }
 
 function draw() {
-	if (selected_i > -1 && selected_j > -1) {
-		if (document.activeElement !== inputTextBox.elt) {
-			inputTextBox.elt.focus();
-		}
-	}
 
 	while (!done && !impossible) {
 		update();
@@ -255,18 +310,22 @@ function draw() {
 	rect(0, 0, board_width, board_heigth);
 	pop();
 
-	for (let i = 0; i <= 9; i++) {
+	for (let i = 0; i <= board_size; i++) {
 		if (i % 3 == 0) strokeWeight(2);
 		else strokeWeight(1);
 		line(0, i * size, board_width, i * size);
 		line(i * size, 0, i * size, board_heigth);
 	}
 
-	textSize(50);
+	textSize(40);
 	textAlign(CENTER, CENTER);
-	for (let i = 1; i <= 9; i++) {
-		for (let j = 1; j <= 9; j++) {
+	for (let i = 1; i <= board_size; i++) {
+		for (let j = 1; j <= board_size; j++) {
 			if (start[i][j] != -1) {
+				push();
+				fill(0, 0, 255);
+			}
+			if ((badRow == i || badCol == j || badQuad == calculateQuad(i, j)) && badVal == start[i][j]) {
 				push();
 				fill(255, 0, 0);
 			}
@@ -276,6 +335,9 @@ function draw() {
 				text(start[i][j], (i - 1) * size, (j - 1) * size, size, size);
 			}
 			if (start[i][j] != -1) {
+				pop();
+			}
+			if ((badRow == i || badCol == j || badQuad == calculateQuad(i, j)) && badVal == start[i][j]) {
 				pop();
 			}
 		}
